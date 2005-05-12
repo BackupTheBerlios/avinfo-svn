@@ -1,0 +1,38 @@
+CXX=gcc
+SHELL=sh
+CXX=gcc 
+#COPT=-O3 -ggdb -posix -Wall --pedantic -nostdinc++ -Wtrigraphs -fbounds-check -fbounded-pointers -fssa -fmerge-all-constants -foptimize-register-move -frename-registers -freorder-blocks -fschedule-insns2 -fdelete-null-pointer-checks -frerun-loop-opt -frerun-cse-after-loop -fgcse -finline-functions -funroll-loops -fomit-frame-pointer --param max-gcse-passes=99 -funsigned-char -mcpu=i486 -march=pentiumpro
+COPT=-O3 -ggdb -posix -Wall --pedantic -nostdinc++ -funsigned-char 
+scanmodules=riff.o mpeg.o text.o ifo.o ogm.o mkv.o
+coremodules=common.o var.o scan.o report.o statisti.o avinfo.o filecach.o print.o ass.tab.o codec.o confset.o readtpl.o
+configway=WINDOWS
+
+modules=$(scanmodules) $(coremodules) 
+
+all: avinfo 
+
+avinfo: $(modules)
+	gcc -fmerge-all-constants $(modules) -o $@ 
+
+ass.tab.c: ass.y 
+	bison -d -v ass.y
+
+%.o: %.c %.h
+	$(CXX) $(COPT) -DCFG_PATH_STYLE_$(configway)=1 -c -o $@ $<
+
+clean:
+	rm $(modules) ass.tab.c ass.tab.h ass.output 
+	rm avinfo*.exe
+
+strip: avinfo
+	strip avinfo.exe
+
+debug:
+	./avinfo.exe -l=list -t:html-list >list.html
+
+test:
+	./avinfo -l=W:/scripts/temp -t:html-list>list.html
+
+win: strip
+	cd nsis && make
+	./avinfo-1.0a16-install.exe	
