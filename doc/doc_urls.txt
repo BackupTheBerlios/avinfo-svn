@@ -1,0 +1,26 @@
+Used documentation:
+
+AVI:
+  http://msdn.microsoft.com/
+ÿ (MSDN Homeÿ>ÿ MSDN Libraryÿ>ÿ Graphics and Multimediaÿ>ÿ DirectXÿ>ÿ 
+	DirectX 9.0 SDK Update (Summer 2003) C++ÿ>ÿ DirectShowÿ>ÿ Appendixesÿ>
+ÿ AVI File Format)
+
+mp3:
+	see mpeg
+
+id3v1:
+	http://id3.org/
+
+mpeg, ifo: 
+	http://dvd.sourceforge.net/dvdinfo/
+	mpeg_sys source code (peeping a little :)
+	http://www.andrewduncan.ws/ (MPEG 1,2 section)
+
+ogm:  http://xiph.org/ and http://tobias.everwicked.com/
+
+
+Configuration/cache file placement:
+
+	*nix (Unix/Linux/BSD): http://www.pathname.com/fhs/
+	Windows:

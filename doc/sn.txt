@@ -1,0 +1,50 @@
+sn = PRINT_MODE_SHORT_NAME
+
+[english part, russian follow below]
+
+sn is a special mode for filename printing. 
+
+In this mode name in "raw" view (after downloading from IRC/torrent/etc)
+replacing by more viewable and compact form.
+
+i.e.
+
+[A-Source_Lililicious]_Maria-sama_ga_Miteru_-_02[f6a600d9].avi
+
+Will be looks like:
+
+[A-Source Lililicious]Maria-sama ga Miteru 02.avi_____________
+
+Underlined space will be used for more detailed description.
+
+Compare:
+[A-Source_Lililicious]_Maria-sama_ga_Miteru_-_05[b873a71a].avi 184Mb 640x480
+and
+[A-Source Lililicious]Maria-sama ga Miteru 05.avi 184Mb 640x480/23m/875Kbps 
+
+This feature useful not only for width-limited devices (like console or
+GoldEd window), but for more human-friendly filelists.
+
+sn do following:
+
+1) remove CRC code (upper or lower case) within [] or ()
+2) remove combination "_-_" or " - " from name
+3) Remove possible space between fansubber group name and filename.
+4) Remove duplicate '__' or '  '
+5) Replace all '_' with ' ' (spaces)
+
+Russian part of document:
+
+sn - специальный режим для представления имён файлов в более удобоваримом
+виде. 
+
+Обычно после IRC/WinMX/torrent/etc файл выглядит не слишком пристойно.
+CRC, куча подчёркиваний, лишние значки, напрягающие при просмотре списка
+файлов.
+
+Самым очевидным является идея "вообще убрать всё, что в квадратных/круглых
+скобках". Однако, при этом потеряется название фэнсаберской группы,
+что очень напрягает в некоторых случаях.
+
+Примеры того, что делает режим sn приведены выше, в английской части
+документации.

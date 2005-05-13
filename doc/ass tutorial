@@ -1,0 +1,56 @@
+A.S.S. Tutorial
+(russian version avaible in ass_tutorial.rus)
+
+hello word sample:
+
+	print "hello word!";
+
+2x2 sample:
+
+	print "2x2=",2*2;
+
+print sample:
+
+	print m1000:65536,"\n";
+	print m1024:65536,"\n";
+	print t:305;
+
+set sample:
+
+	set a=3;
+	print a,"x3=", a*3;
+
+adv. set;
+
+	set foo=5;
+	set bar="hello word# \x32";
+	set foobar=foo++ * bar;
+	print foo, "...", bar, "...", foobar, "\n";
+
+if
+
+	set a=333;
+	if(a<<3>4) print "OK"; else print "ooops";
+
+
+while sample:
+
+	set a=3;
+	while(a++<20) print a, "\n";
+
+do sample:
+
+	set x=1;
+
+	do{ print x; print "\n"; set x=x*2;} while (x<65536);
+
+
+exit sample:
+
+	set a=30;
+	while(--a) print a, " ";
+	if (!a) exit;
+	print "error!";
+
+
+Simple, isn't it?
