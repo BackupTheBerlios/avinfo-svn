@@ -4,7 +4,7 @@
 ;
 ;--------------------------------
 
-#include "../ver.h"
+#include "../src/ver.h"
 !include "MUI.nsh"
 
 ; The name of the installer
@@ -46,7 +46,7 @@ Section "Binaries (required)" SecBinaries
   SetOutPath $INSTDIR
   
   ; Put file there
-  File "..\avinfo.exe"
+  File "..\src\avinfo.exe"
   
   ; Write the installation path into the registry
   WriteRegStr HKLM SOFTWARE\avinfo "Install_Dir" "$INSTDIR"
@@ -65,7 +65,7 @@ Section "Template file" SecTemplates
 
 	SetOutPath $INSTDIR
 	
-	File "..\avinfo.tpl"
+	File "..\src\avinfo.tpl"
 
 SectionEnd
 
@@ -73,7 +73,7 @@ Section "Configuration file" SecConfig
 
 	SetOutPath $INSTDIR
 	
-	File "..\avinfo.cfg"
+	File "..\src\avinfo.cfg"
 
 SectionEnd
 
@@ -83,7 +83,7 @@ Section "Russian"SecEnDoc
 
 	SetOutPath $INSTDIR\docs
 	
-	File "..\..\..\docs\readme.ru.html"
+	File "..\doc\readme.ru.html"
 
 SectionEnd
 
@@ -91,7 +91,7 @@ Section "English" SecRuDoc
 
 	SetOutPath $INSTDIR\docs
 	
-	File "..\..\..\docs\readme.en.html"
+	File "..\doc\readme.en.html"
 
 SectionEnd
 

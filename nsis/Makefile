@@ -5,7 +5,7 @@ NSIS="C:/Program Files/NSIS/makensis.exe"
 CPP=cpp
 configway=WINDOWS
 
-all: avinfo.nsi ../avinfo.exe
+all: avinfo.nsi ../src/avinfo.exe
 	$(NSIS) avinfo.nsi >nsislog
 	mv *.exe ..
 

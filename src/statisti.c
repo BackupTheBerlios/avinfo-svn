@@ -33,11 +33,7 @@ minmax_t minmax[]={
 	{"v#.fpsH","fps"},
 	{"v#.bps","vidbps"},
 	{"a#.freq","freq"},
-	{"a#.bps","audbps"},
-	{"stream.v","vidstream"},
-	{"stream.a","audstream"},
-	{"stream.t","textstream"},
-	{"stream.d","descstream"}
+	{"a#.bps","audbps"}
 };
 #define MINMAXC (sizeof(minmax)/sizeof(minmax[0]))
 
@@ -65,6 +61,7 @@ vlist_t* GatherStatistic(fcache_t* fcache, config_t *cfg){
 	int minFileNameLen=0;
 	int maxFileNameLen=0;
 	int tempLen;
+	int errCnt=0;
 	#define GathStatBUFFSIZE 128
 	char buffer[GathStatBUFFSIZE];
 	int c,i;
@@ -78,6 +75,7 @@ vlist_t* GatherStatistic(fcache_t* fcache, config_t *cfg){
 			if(currentMin!=0&&(currentMin<minv[i]||!minv[i])) minv[i]=currentMin;
 			if(currentMax>maxv[i])maxv[i]=currentMax;
 		}
+		if(*GetROStringVar(fcache->record[c].var_list,"error")) errCnt++;
 		fileCounter++;
 		fileCommonSize+=(GetNumericVar(fcache->record[c].var_list,"size")/1024); /* in Kb (!!!) TODO */
 		tempLen=GetNumericVar(fcache->record[c].var_list,"v1.l");
@@ -97,6 +95,7 @@ vlist_t* GatherStatistic(fcache_t* fcache, config_t *cfg){
 	SetNumericVar(retval,"stat.total.files",fileCounter);
 	SetNumericVar(retval,"stat.total.size",fileCommonSize/1024);/*kb->Mb*/
 	SetNumericVar(retval,"stat.total.length",fileCommonLength);
+	SetNumericVar(retval,"stat.total.error",errCnt);
 	SetNumericVar(retval,"stat.max.name",maxFileNameLen);
 	SetNumericVar(retval,"stat.min.name",minFileNameLen);
 	if(cfg->title) SetStringVar(retval,"title",cfg->title);

@@ -34,5 +34,5 @@ test:
 	./avinfo -l=W:/scripts/temp -t:html-list>list.html
 
 win: strip
-	cd nsis && make
-	./avinfo-1.0a16-install.exe	
+	cd ../nsis && make
+	../avinfo-1.0a16-install.exe	
