@@ -41,11 +41,11 @@ void report(fcache_t* fcache, FILE* output, config_t* cfg){
 	vlist_t* FileStatistic=GatherStatistic(fcache,cfg);
 	cfg->reportbegin=time(NULL);
 	SetNumericVar(FileStatistic,"run.scan.time",cfg->reportbegin-cfg->scanbegin);
-	if(!cfg->falltobuildintemplate){ /*print head*/
+	if(!cfg->falltobuiltintemplate){ /*print head*/
 		ParseTemplate(output,cfg->template->content[0].text,cfg->template->content[0].textlinesize,FileStatistic);
 	}
 	for (c=0;c<fcache->used_records;c++){/*print body for each entry*/
-		if(!cfg->falltobuildintemplate) {
+		if(!cfg->falltobuiltintemplate) {
 			AddList(fcache->record[c].var_list,FileStatistic);
 			SetNumericVar(fcache->record[c].var_list,"counter",c);
 			ParseTemplate(output,cfg->template->content[1].text, cfg->template->content[1].textlinesize,fcache->record[c].var_list);
@@ -54,7 +54,7 @@ void report(fcache_t* fcache, FILE* output, config_t* cfg){
 			PrintVList(output,fcache->record[c].var_list);
 	}
 	cfg->timeend=time(NULL);
-	if(!cfg->falltobuildintemplate){	/*print foot*/
+	if(!cfg->falltobuiltintemplate){	/*print foot*/
 		SetNumericVar(FileStatistic,"run.report.time",cfg->timeend-cfg->reportbegin);
 		ParseTemplate(output,cfg->template->content[2].text,cfg->template->content[2].textlinesize,FileStatistic);
 	}

@@ -169,12 +169,17 @@ void PrepareName(vlist_t* list,const char* in){
 
 FILE* PrepareFile(const char* filename, vlist_t* list, config_t* cfg){
 	FILE* retval;
+	char buffer[80];
 	PrepareName(list,filename);	
 	retval=fopen(filename,"rb");
 	if(retval){
-		fseek(retval,0,SEEK_END);
+		fseek(retval,0,SEEK_END); /*TODO: do not use a fseek to get a size, use a stat()*/
 		SetNumericVar(list,"size",(int)ftell(retval)); /*TODO size_t!=int!*/
 		fseek(retval,SEEK_SET,0);
+	}
+	else{
+			snprintf(buffer,80,"unable open file (error #%d)",errno);
+			SetStringVar(list,"error", "unable to open file");
 	}
 	return retval;
 }
@@ -183,16 +188,20 @@ vlist_t* ScanFile(const char* filename, config_t* cfg){
 	modulefunc module=SelectModule(filename,cfg);
 	vlist_t* retval=NULL;	
 	FILE* handle;
-	if(module){
+	if(module||cfg->reportUnknown){
 		assert(retval=CreateVList(NULL));
+	}
+	if(module){
 		handle=PrepareFile(filename,retval,cfg);
-		if(!handle){
-			SetStringVar(retval,"error", "unable to open file");
-		}
-		else{/*file opening ok*/
-			if(!module(retval,handle,cfg->flags))  /*scan*/
+		if(handle){
+			if(!module(retval,handle,cfg->flags))  /*	*SCAN*		*/
 				SetStringVar(retval,"error","format unrecognized");
 			fclose(handle);
+		}
+	}else{
+		if(cfg->reportUnknown){
+			PrepareName(retval,filename);
+			SetStringVar(retval,"error", "unknown format");
 		}
 	}
 	return retval;

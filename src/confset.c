@@ -76,9 +76,10 @@ const optd_t parameter[]={
 	{	"modify-var",	'M',	OPTION_modify_var,	VT_string,	"set variable for template parser"	},
 	{	"date-range",	'd',	OPTION_date_range,	VT_string,	"set date range (YYYY.MM.DD-YYYY.MM.DD)"	},
 	{	"help",			'h',	OPTION_help,		VT_unknown, "diplay help message"	},
-	{	"built-in",		'b',	OPTION_usebuildin,	VT_number,	"use built in template if external template file not found"	},
+	{	"built-in",		'b',	OPTION_usebuiltin,	VT_number,	"use built in template if external template file not found"	},
 	{	"version",		'v',	OPTION_version,		VT_unknown, "application vesion"	},
 	{	"title",		0,		OPTION_title,		VT_string,	"set up title (for html templates)"	},
+	{	"report-unknown",0,		OPTION_reportUnknown,VT_unknown,	"report about files with unknown format"},
 	{	"filename",		0,		OPTION_filename,	VT_string,	""}
 };
 
@@ -499,9 +500,9 @@ config_t* Configure(int argc, char* argv[]){
 	free(ConfigPath);
 	free(startDir);
 	if(!cfg->template){
-		/*TODO add BuildIn*/
-		cfg->falltobuildintemplate=1;
-		printf("Switch to built in template\n");
+		/*TODO add BuiltIn*/
+		cfg->falltobuiltintemplate=1;
+		printf("Switch to builtin template\n");
 	}
 	assert(cfg->base=CreateConstantList());
 	if(!cfg->filename&&!cfg->filelist){
@@ -610,8 +611,8 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 				if(conf->filename) free(conf->filename);
 				conf->filename=strdup(in[c].string_value);
 				break;
-			case OPTION_usebuildin:
-				/*TODO*/
+			case OPTION_usebuiltin:
+				conf->usebuiltin=in[c].number_value;
 				break;
 			case OPTION_version:
 				conf->noerrorclose=1;
@@ -620,6 +621,9 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 				break;
 			case OPTION_title:
 				conf->title=strdup(in[c].string_value);
+				break;
+			case OPTION_reportUnknown:
+				conf->reportUnknown=in[c].number_value;
 				break;
 			case OPTION_help:
 				conf->noerrorclose=1;
