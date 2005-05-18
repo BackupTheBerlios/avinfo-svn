@@ -68,6 +68,7 @@ const optd_t parameter[]={
 	{	"template-file",'T',	OPTION_template_file, VT_string,"use a different template file"	},
 	{	"cache-file",	'C',	OPTION_cache_file,	VT_string,	"use a different cache-file"	},
 	{	"output",		'o',	OPTION_output, 		VT_string,	"write otput to specified file"	},
+	{	"append",		'A',	OPTION_append,		VT_unknown,	"append new data to output file (use with -o)"	},
 	{	"process",		'p',	OPTION_process, 	VT_string,	"mask for file selection"		},
 	{	"template",		't',	OPTION_template_name, VT_string,"template name"					},
 	{	"force-ext",	'f',	OPTION_force_ext, 	VT_string,	"thread all file as specified type (buggly)"	},
@@ -498,7 +499,7 @@ config_t* Configure(int argc, char* argv[]){
 	}
 	if(!cfg->templatename) cfg->templatename=strdup(DefaultTemplateName);
 	cfg->template=ReadTemplate(ConfigPath,cfg->templatename);
-/*	if(ConfigPath) free(ConfigPath);
+/*	if(ConfigPath) free(ConfigPath); BUG???? FIX????!!!! !!! !!!
 	if(startDir) free(startDir);*/
 	if(!cfg->template){
 		/*TODO add BuiltIn*/
@@ -580,6 +581,9 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 			case OPTION_output:
 				if(conf->outputfilename) free(conf->outputfilename);
 				conf->outputfilename=strdup(in[c].string_value);
+				break;
+			case OPTION_append:
+				conf->appendFlag=1;
 				break;
 			/*string option*/
 			case OPTION_process:

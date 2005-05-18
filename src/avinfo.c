@@ -25,11 +25,25 @@
 int main( int argc, char* argv[] ){
     config_t *cfg;
 	fcache_t *fcache;
+	FILE* output;
 
 	cfg=Configure(argc,argv);
 	if(!cfg) return -1; /*if no filename or filelist*/
 	fcache=scan(cfg);
 	if(!fcache) return 1;
-	report(fcache,stdout,cfg);
+
+	if(cfg->outputfilename){
+		if(cfg->outputfilename[0]=='-'&&cfg->outputfilename[1]==0) output=stdout;
+		else{
+			output=fopen(cfg->outputfilename,cfg->appendFlag?"a":"w");
+			if(!output){
+				fprintf(stderr,"error opening output file %s\n",cfg->outputfilename);
+				return 1;
+			}
+		
+		}
+	}else output=stdout;
+	report(fcache,output,cfg);
+	if(output!=stdout) fclose(output);
 	return 0;
 }

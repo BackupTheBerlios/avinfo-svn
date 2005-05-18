@@ -68,6 +68,7 @@ enum{
 	OPTION_template_file,
 	OPTION_cache_file,
 	OPTION_output,
+	OPTION_append,
 	OPTION_process,
 	OPTION_template_name,
 	OPTION_force_ext,
@@ -119,6 +120,7 @@ typedef struct {
 	int noerrorclose; /*if ==1, just shut up and terminate (if --help, we do not need to do anything except help message)*/
 	int reportUnknown;
 	int offset; /*scaning offset in file*/
+	int appendFlag; /*open output file for append instead overwrite*/
 	time_t scanbegin;
 	time_t reportbegin;
 	time_t timeend;
