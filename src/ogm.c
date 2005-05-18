@@ -243,7 +243,7 @@ int ogmparse(vlist_t* list,FILE* file, int s){
 				if(!audio[c][A_bps]||!audio[c][A_l]) goto skip;
 				common_audio_data_size+=audio[c][A_bps]*audio[c][A_l]/8;
 			}
-			fseek(file,0,SEEK_END);
+			fseek(file,0,SEEK_END); /*redo?*/
 			video[0][V_bps]=(ftell(file)-common_audio_data_size)/video[0][V_l]*8;
 
 

@@ -22,7 +22,7 @@ ass.tab.c: ass.y
 
 clean:
 	rm $(modules) ass.tab.c ass.tab.h ass.output 
-	rm avinfo*.exe
+	rm avinfo.exe
 
 strip: avinfo
 	strip avinfo.exe

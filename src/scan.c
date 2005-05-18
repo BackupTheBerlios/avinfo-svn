@@ -175,7 +175,7 @@ FILE* PrepareFile(const char* filename, vlist_t* list, config_t* cfg){
 	if(retval){
 		fseek(retval,0,SEEK_END); /*TODO: do not use a fseek to get a size, use a stat()*/
 		SetNumericVar(list,"size",(int)ftell(retval)); /*TODO size_t!=int!*/
-		fseek(retval,SEEK_SET,0);
+		fseek(retval,cfg->offset,SEEK_SET);
 	}
 	else{
 			snprintf(buffer,80,"unable open file (error #%d)",errno);

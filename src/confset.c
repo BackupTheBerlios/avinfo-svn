@@ -80,6 +80,7 @@ const optd_t parameter[]={
 	{	"version",		'v',	OPTION_version,		VT_unknown, "application vesion"	},
 	{	"title",		0,		OPTION_title,		VT_string,	"set up title (for html templates)"	},
 	{	"report-unknown",0,		OPTION_reportUnknown,VT_unknown,	"report about files with unknown format"},
+	{	"offset",		0,		OPTION_offset,		VT_number,	"begin scaning from specified offset (do not use in filelist!)"},
 	{	"filename",		0,		OPTION_filename,	VT_string,	""}
 };
 
@@ -449,7 +450,7 @@ static int isAbsolutePath(const char* line){
 config_t* Configure(int argc, char* argv[]){
 	#define EL_NUM sizeof(parameter)/sizeof(*parameter)
 	char* startDir=GetStartDir(argv[0]);
-	char* ConfigPath;
+	char* ConfigPath=NULL;
 	config_t * cfg;
 	optv_t* optv;
 	assert(cfg=calloc(sizeof(config_t),1));
@@ -497,8 +498,8 @@ config_t* Configure(int argc, char* argv[]){
 	}
 	if(!cfg->templatename) cfg->templatename=strdup(DefaultTemplateName);
 	cfg->template=ReadTemplate(ConfigPath,cfg->templatename);
-	free(ConfigPath);
-	free(startDir);
+/*	if(ConfigPath) free(ConfigPath);
+	if(startDir) free(startDir);*/
 	if(!cfg->template){
 		/*TODO add BuiltIn*/
 		cfg->falltobuiltintemplate=1;
@@ -624,6 +625,9 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 				break;
 			case OPTION_reportUnknown:
 				conf->reportUnknown=in[c].number_value;
+				break;
+			case OPTION_offset:
+				conf->offset=in[c].number_value;
 				break;
 			case OPTION_help:
 				conf->noerrorclose=1;

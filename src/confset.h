@@ -80,6 +80,7 @@ enum{
 	OPTION_version,
 	OPTION_title,
 	OPTION_reportUnknown,
+	OPTION_offset,
 	OPTION_filename
 };
 
@@ -117,6 +118,7 @@ typedef struct {
 	int usebuiltin;
 	int noerrorclose; /*if ==1, just shut up and terminate (if --help, we do not need to do anything except help message)*/
 	int reportUnknown;
+	int offset; /*scaning offset in file*/
 	time_t scanbegin;
 	time_t reportbegin;
 	time_t timeend;

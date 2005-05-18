@@ -91,6 +91,7 @@ int ReadTemplate2(FILE *f,template_t* t, int lc){
 						param=atoi(p2);
 					}else param=0;
 					tpl_curr=c;
+					t->content[c].textlinesize=param;
 				}
 			}
 			if(!fflag) break;

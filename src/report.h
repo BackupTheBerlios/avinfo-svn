@@ -30,4 +30,5 @@
 #include "confset.h"
 #include "statisti.h"
 vlist_t* GatherStatistic(fcache_t* fcache, config_t *cfg);
+void report(fcache_t* fcache, FILE* output, config_t* cfg);
 #endif

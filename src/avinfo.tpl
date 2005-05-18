@@ -141,14 +141,16 @@
 	if (a1.ch) print "/",a1.ch,"ch";
 	print "\n";
 [foot=78]
-	print "\nStatistic: ",total.files, " files (",total.processed, " processed) ", "common length: ", ct:total.time, ", common size: ", total.size, "Gb","\n";
-	print "Min found:\t";
-	if ( total.minx && total.miny ) print " video: ", total.minx,"x",total.miny, " ";
-	if ( total.minfps ) print " ", total.minfps, "fps ";
-	if ( total.minvbps ) print m1000:total.minvbps, "bps";
-	if ( total.minabps||total.minfreq) print "\taudio: ";
-	if ( total.minfreq) print m1000:total.minfreq, "Hz ";
-	if ( total.minabps) print m1000:total.minabps, "bps";
+	print "\nStatistic: ",stat.total.files, " file(s), common length: ", ct:stat.total.length;
+	print  ", common size: ";
+	if(stat.total.size >10240)  print stat.total.size/1024, " Gb\n"; else print stat.total.size, " Mb\n";
+	print "\tName\tBest\tWorst\t\n";
+	if(stat.max.x||stat.min.x) print "\tHorizontal resolution:\t",stat.max.x,"\t",stat.min.x, "\n";
+	if(stat.max.y||stat.min.y) print "\tVertical resolution:\t",stat.max.y,"\t",stat.min.y, "\n";	
+	if(stat.min.fps||stat.max.fps) print "\tFPS\t",stat.max.fps,"\t",stat.min.fps,"\n";		
+	if(stat.min.vidbps||stat.max.vidbps) print "\tVideo bitrate\t",m1000:stat.max.vidbps,"\t",m1000:stat.min.vidbps, "\n";
+	if(stat.max.audbps) print "\tAudio bitrate\t",m1000:stat.max.audbps,"\t",m1000:stat.min.audbps, "\n";
+	if(stat.max.freq) print "\tAudio sampling rate\t",m1000:stat.max.freq,"\t",m1000:stat.min.freq, "\n";
 [template name=html-list ver=1]
 [head]
 	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
@@ -400,11 +402,8 @@ print "\nStatistic;",total.files, " files; ",total.processed, " processed; ", "c
 	  if ( total.minfreq) print m1000:total.minfreq, "Hz ;";
 	  if ( total.minabps) print m1000:total.minabps, "bps;\n";
 [template name=test ver=1]
-[head]
-	if(stat.max.freq) print "<tr><td>Audio quality<td>",m1000:stat.max.freq"Hz<td>",m1000:stat.min.freq,"Hz";
-	print "</table>";
-	print "</body></html>";
+[body=78]
+print "*\t*\t*";
+exit;
 [foot]
-print "length",stat.total.length;
 #the end
-
