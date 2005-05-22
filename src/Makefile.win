@@ -1,11 +1,9 @@
-CXX=gcc
 SHELL=sh
 CXX=gcc 
 #COPT=-O3 -ggdb -posix -Wall --pedantic -nostdinc++ -Wtrigraphs -fbounds-check -fbounded-pointers -fssa -fmerge-all-constants -foptimize-register-move -frename-registers -freorder-blocks -fschedule-insns2 -fdelete-null-pointer-checks -frerun-loop-opt -frerun-cse-after-loop -fgcse -finline-functions -funroll-loops -fomit-frame-pointer --param max-gcse-passes=99 -funsigned-char -mcpu=i486 -march=pentiumpro
-COPT=-O3 -ggdb -posix -Wall --pedantic -nostdinc++ -funsigned-char 
+COPT=-O3 -ggdb -posix -Wall --pedantic -nostdinc++ -funsigned-char
 scanmodules=riff.o mpeg.o text.o ifo.o ogm.o mkv.o
 coremodules=common.o var.o scan.o report.o statisti.o avinfo.o filecach.o print.o ass.tab.o codec.o confset.o readtpl.o
-configway=WINDOWS
 
 modules=$(scanmodules) $(coremodules) 
 
@@ -18,7 +16,10 @@ ass.tab.c: ass.y
 	bison -d -v ass.y
 
 %.o: %.c %.h
-	$(CXX) $(COPT) -DCFG_PATH_STYLE_$(configway)=1 -c -o $@ $<
+	$(CXX) $(COPT) -DMAKEFILE_WIN -c -o $@ $<
+
+%.tab.o: %.tab.c
+	$(CXX) $(COPT) -DMAKEFILE_WIN -c -o $@ $<
 
 clean:
 	rm $(modules) ass.tab.c ass.tab.h ass.output 
@@ -35,4 +36,4 @@ test:
 
 win: strip
 	cd ../nsis && make
-	../avinfo-1.0a16-install.exe	
+	../avinfo-1.0a16-install.exe
