@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include <strings.h>
 #include <assert.h>
 
 char* min_view (const int number);
