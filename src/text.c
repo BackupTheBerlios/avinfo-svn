@@ -25,8 +25,8 @@ extern int textparse (vlist_t* list, FILE* file, int flags ){
 /*** This module just detect language of subtitle file (only eng/rus check)
 	 v0.1 beta. Ideas acepting and will be taking with pleasure*/
 #define MAX_READ_TRY 128
-	char buffer[1024];
-	char* pointer;
+	unsigned char buffer[1024];
+	unsigned char* pointer;
 	int GT_128=1;/*non ASCII chars count*/
 	int bin=1;
 	int total=1;
