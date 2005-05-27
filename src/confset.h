@@ -35,7 +35,6 @@
 #include "codec.h"
 #include "readtpl.h"
 
-
 #define COMMENT_CHAR '#'
 #ifndef MAX_PATH
 	#define MAX_PATH 1024

@@ -21,6 +21,7 @@
  *************************************************************************/
 #include "confset.h"
 
+
 const char* help_title=
 	AVINFO_SIGNATURE" "
 	AVINFO_VERSION" "
@@ -43,46 +44,46 @@ const constants_t consts[]={
 	{"cn", PRINT_MODE_CODEC_NAME},
 	{"maxlist",77},
 	{"sotona",0x29A},
-	{"DIV3",FOURCC_DIV3},
-	{"XVID",FOURCC_XVID},
-	{"DIVX",FOURCC_DIVX},
-	{"DX50",FOURCC_DX50}
+	{"DIV3",FCC_DIV3},
+	{"XVID",FCC_XVID},
+	{"DIVX",FCC_DIVX},
+	{"DX50",FCC_DX50}
 };
 
 const optd_t parameter[]={
 	{	"include",		0,		0,					VT_unknown,	""	}, /*special value*/
-	{	"reccurent",	'r',	OPTION_reccurent,	VT_number,	"Do reccurent scan of directory"	},
-	{	"cache-ro",		'R',	OPTION_cache_ro, 	VT_number,	"ReadOnly access to cache file"		},
-	{	"cache-erase",	'E',	OPTION_cache_er, 	VT_number,	"Recreate new cache file (old will be erased)"	},
-	{	"no-cache",		'n',	OPTION_no_cache, 	VT_number,	"Do not use cache file"	},
-	{	"no-scan",		'N',	OPTION_no_scan, 	VT_number,	"Do not scan (only use a cache)"	},
-	{	"delete",		'D',	OPTION_delete, 		VT_number,	"Remove specified files from cache"	},
-	{	"backup",		'B',	OPTION_backup, 		VT_number,	"Create backup copy of cache"		},
-	{	"max-line",		'm',	OPTION_maxline, 	VT_number,	"redefine maximal line length"		},
-	{	"silent",		's',	OPTION_silent, 		VT_number,	"do not print any on screen"		},
-	{	"wait",			'w',	OPTION_wait, 		VT_number,	"pause between scan operation (ms)"	},
-	{	"sort",			's',	OPTION_sort, 		VT_number,	"sort output by filename"			},
-	{	"crc-verify",	'V',	OPTION_crc, 		VT_number,	"check CRC32 (if filename contain CRC) (SLOW!)"	},
-	{	"list",			'l',	OPTION_list, 		VT_string,	"use a filelist (use '-' as a stdin)"	},
-	{	"config",		'c',	OPTION_config, 		VT_string,	"use a different config file"	},
-	{	"template-file",'T',	OPTION_template_file, VT_string,"use a different template file"	},
-	{	"cache-file",	'C',	OPTION_cache_file,	VT_string,	"use a different cache-file"	},
-	{	"output",		'o',	OPTION_output, 		VT_string,	"write otput to specified file"	},
-	{	"append",		'A',	OPTION_append,		VT_unknown,	"append new data to output file (use with -o)"	},
-	{	"process",		'p',	OPTION_process, 	VT_string,	"mask for file selection"		},
-	{	"template",		't',	OPTION_template_name, VT_string,"template name"					},
-	{	"force-ext",	'f',	OPTION_force_ext, 	VT_string,	"thread all file as specified type (buggly)"	},
-	{	"ignore-ext",	'i',	OPTION_ignore_ext,	VT_string,	"ignore specified extension (separated by ';')"	},
-	{	"group",		'g',	OPTION_group,		VT_string,	"use grouping"	},
-	{	"modify-var",	'M',	OPTION_modify_var,	VT_string,	"set variable for template parser"	},
-	{	"date-range",	'd',	OPTION_date_range,	VT_string,	"set date range (YYYY.MM.DD-YYYY.MM.DD)"	},
-	{	"help",			'h',	OPTION_help,		VT_unknown, "diplay help message"	},
-	{	"built-in",		'b',	OPTION_usebuiltin,	VT_number,	"use built in template if external template file not found"	},
-	{	"version",		'v',	OPTION_version,		VT_unknown, "application vesion"	},
-	{	"title",		0,		OPTION_title,		VT_string,	"set up title (for html templates)"	},
-	{	"report-unknown",0,		OPTION_reportUnknown,VT_unknown,	"report about files with unknown format"},
-	{	"offset",		0,		OPTION_offset,		VT_number,	"begin scaning from specified offset (do not use in filelist!)"},
-	{	"filename",		0,		OPTION_filename,	VT_string,	""}
+	{	"reccurent",	'r',	OPTION_reccurent,	VT_number,	"Do reccurent scan of directory"	}, /*no implement*/
+	{	"cache-ro",		'R',	OPTION_cache_ro, 	VT_number,	"ReadOnly access to cache file"		}, /*no implement*/
+	{	"cache-erase",	'E',	OPTION_cache_er, 	VT_number,	"Recreate new cache file (old will be erased)"	},/*no implement*/
+	{	"no-cache",		'n',	OPTION_no_cache, 	VT_number,	"Do not use cache file"	},/*no implement*/
+	{	"no-scan",		'N',	OPTION_no_scan, 	VT_number,	"Do not scan (only use a cache)"	},/*no implement*/
+	{	"delete",		'D',	OPTION_delete, 		VT_number,	"Remove specified files from cache"	},/*no implement*/
+	{	"backup",		'B',	OPTION_backup, 		VT_number,	"Create backup copy of cache"		},/*no implement*/
+	{	"max-line",		'm',	OPTION_maxline, 	VT_number,	"redefine maximal line length"		},/*implemented*/
+	{	"silent",		's',	OPTION_silent, 		VT_number,	"do not print any on screen"		},/*no implement*/
+	{	"wait",			'w',	OPTION_wait, 		VT_number,	"pause between scan operation (ms)"	},/*implement (bug)*/
+	{	"sort",			's',	OPTION_sort, 		VT_number,	"sort output by filename"			},/*no implement*/
+	{	"crc-verify",	'V',	OPTION_crc, 		VT_number,	"check CRC32 (if filename contain CRC) (SLOW!)"	},/*no implement*/
+	{	"list",			'l',	OPTION_list, 		VT_string,	"use a filelist (use '-' as a stdin)"	},/*implement*/
+	{	"config",		'c',	OPTION_config, 		VT_string,	"use a different config file"	},/*implement*/
+	{	"template-file",'T',	OPTION_template_file, VT_string,"use a different template file"	},/*implement*/
+	{	"cache-file",	'C',	OPTION_cache_file,	VT_string,	"use a different cache-file"	},/*no implement*/
+	{	"output",		'o',	OPTION_output, 		VT_string,	"write otput to specified file"	},/*implement*/
+	{	"append",		'A',	OPTION_append,		VT_unknown,	"append new data to output file (use with -o)"	},/*implement*/
+	{	"process",		'p',	OPTION_process, 	VT_string,	"mask for file selection"		},/*no implement*/
+	{	"template",		't',	OPTION_template_name, VT_string,"template name"					},/*implement*/
+	{	"force-ext",	'f',	OPTION_force_ext, 	VT_string,	"thread all file as specified type (buggly)"	},/*implement*/
+	{	"ignore-ext",	'i',	OPTION_ignore_ext,	VT_string,	"ignore specified extension (separated by ';')"	},/*implement*/
+	{	"group",		'g',	OPTION_group,		VT_string,	"use grouping"	},/*no implement*/
+	{	"modify-var",	'M',	OPTION_modify_var,	VT_string,	"set variable for template parser"	},/*implement*/
+	{	"date-range",	'd',	OPTION_date_range,	VT_string,	"set date range (YYYY.MM.DD-YYYY.MM.DD)"	},/*no implement*/
+	{	"help",			'h',	OPTION_help,		VT_unknown, "diplay help message"	},/*implement*/
+	{	"built-in",		'b',	OPTION_usebuiltin,	VT_number,	"use built in template (do not read template file)"	},/*implement*/
+	{	"version",		'v',	OPTION_version,		VT_unknown, "application vesion"	},/*implement*/
+	{	"title",		0,		OPTION_title,		VT_string,	"set up title (for html templates)"	},/*implement*/
+	{	"report-unknown",0,		OPTION_reportUnknown,VT_unknown,	"report about files with unknown format"},/*implement*/
+	{	"offset",		0,		OPTION_offset,		VT_number,	"begin scaning from specified offset (do not use in filelist!)"},/*implement*/
+	{	"filename",		0,		OPTION_filename,	VT_string,	""}/*implement*/
 };
 
 
@@ -427,15 +428,22 @@ const char* SystemDefaultTemplate=CFG_SYSTEM_DEFAULT_TEMPLATE;
 const char* DefaultTemplateName=CFG_DEFAULT_TEMPLATE_NAME;
 
 
-static char* GetStartDir(char* appPath){
-	int l=strlen(appPath);
-	char* retval;
-	while(l && (appPath[l]!='/'&&appPath[l]!='\\')) l--;  /*note: appPath[l]!='\\' - for Windows compability*/
-	if(!l) return strdup("");
-	assert(retval=malloc(l+1));
-	memcpy(retval,appPath,l+1);
-	retval[l+1]=0;
-	return retval;
+char* GetStartDir(){
+	#ifdef WINDOWS
+		int l=strlen(_pgmptr);
+		char* retval;
+		while(l && (_pgmptr[l]!='/'&&_pgmptr[l]!='\\')) l--;  /*note: appPath[l]!='\\' - for Windows compability*/
+		if(!l) return strdup("");
+		assert(retval=malloc(l+1));
+		memcpy(retval,_pgmptr,l+1);
+		retval[l+1]=0;
+		return retval;
+	#endif
+	#ifndef WINDOWS
+		fprintf(stderr,"Bad compilation settings, config/template filenames must be absolute path in *nix\n");
+		exit(-1);
+		return NULL;
+	#endif
 }
 
 static int isAbsolutePath(const char* line){
@@ -450,7 +458,7 @@ static int isAbsolutePath(const char* line){
 
 config_t* Configure(int argc, char* argv[]){
 	#define EL_NUM sizeof(parameter)/sizeof(*parameter)
-	char* startDir=GetStartDir(argv[0]);
+	char* startDir=GetStartDir();
 	char* ConfigPath=NULL;
 	config_t * cfg;
 	optv_t* optv;
@@ -489,22 +497,25 @@ config_t* Configure(int argc, char* argv[]){
 		}
 	if(cfg->userconfig||*UserDefaultConfig||*SystemMandatoryConfig)	
 		ApplyOption(cfg,parameter,optv,EL_NUM);
-
-	if(!cfg->templatefile){
-			if(isAbsolutePath(SystemDefaultTemplate)) ConfigPath=strdup(SystemDefaultTemplate);
-				else ConfigPath=strjoin(startDir,SystemDefaultTemplate);
-	}else{
-			if(isAbsolutePath(cfg->templatefile)) ConfigPath=strdup(cfg->templatefile);
-			else ConfigPath=strjoin(startDir,cfg->templatefile);
+	if(cfg->usebuiltin){
+		cfg->falltobuiltintemplate=1;
 	}
-	if(!cfg->templatename) cfg->templatename=strdup(DefaultTemplateName);
-	cfg->template=ReadTemplate(ConfigPath,cfg->templatename);
+	else{
+		if(!cfg->templatefile){
+				if(isAbsolutePath(SystemDefaultTemplate)) ConfigPath=strdup(SystemDefaultTemplate);
+					else ConfigPath=strjoin(startDir,SystemDefaultTemplate);
+		}else{
+				if(isAbsolutePath(cfg->templatefile)) ConfigPath=strdup(cfg->templatefile);
+				else ConfigPath=strjoin(startDir,cfg->templatefile);
+		}
+		if(!cfg->templatename) cfg->templatename=strdup(DefaultTemplateName);
+		cfg->template=ReadTemplate(ConfigPath,cfg->templatename);
 /*	if(ConfigPath) free(ConfigPath); BUG???? FIX????!!!! !!! !!!
 	if(startDir) free(startDir);*/
-	if(!cfg->template){
-		/*TODO add BuiltIn*/
-		cfg->falltobuiltintemplate=1;
-		printf("Switch to builtin template\n");
+		if(!cfg->template){
+			cfg->falltobuiltintemplate=1;
+			printf("Switch to builtin template\n");
+		}
 	}
 	assert(cfg->base=CreateConstantList());
 	if(!cfg->filename&&!cfg->filelist){
@@ -526,7 +537,7 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 		if(!in[c].found) continue;
 		switch(optd[c].OptID){
 			case OPTION_reccurent: 
-				conf->reccurent=in[c].number_value;
+				conf->reccurent=1;
 				break;
 			case OPTION_cache_ro:
 				conf->cache_ro=in[c].number_value;
@@ -617,7 +628,7 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 				conf->filename=strdup(in[c].string_value);
 				break;
 			case OPTION_usebuiltin:
-				conf->usebuiltin=in[c].number_value;
+				conf->usebuiltin=1;
 				break;
 			case OPTION_version:
 				conf->noerrorclose=1;

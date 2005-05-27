@@ -207,7 +207,7 @@ void PrintVList(FILE* out,vlist_t* list){
 	}
 }
 
-void ViewAllLists(vlist_t* start){
+void ViewAllLists(vlist_t* start){ /*used for debug puporses*/
 	vlist_t* p=start;
 	int c=0;
 	while(p){
@@ -235,4 +235,48 @@ void AddList(vlist_t* to, vlist_t* newlist){
 	while(p->Next)	
 		p=p->Next;
 	p->Next=newlist;
+}
+
+void AddDate(vlist_t* list, char* prefix,time_t UnixTime){
+	/** add to list variables about time, specified in UnixTime (UnixTime - seconds since Epoch)
+		$prefix.utime == UnixTime
+
+		decoded:
+		$prefix.year
+		$prefix.mon
+		$prefix.day
+		$prefix.hour
+		$prefix.min
+		$prefix.sec
+		$prefix.wday - day of week
+		$prefix.yday - day of year
+ 	**/
+
+	int prefixlen=strlen(prefix);
+	char* buffer;
+	struct tm *loctime;
+	#define POSTFIXSIZE 8
+	#define AddRecord(a,b) \
+			do{	\
+				memcpy(buffer+prefixlen,a,strlen(a)+1);	\
+				SetNumericVar(list,buffer,(int)b);	\
+			}while(0);
+			
+	assert(buffer=malloc(prefixlen+POSTFIXSIZE));
+	memcpy(buffer,prefix,prefixlen);
+
+	loctime=localtime(&UnixTime);
+
+	AddRecord("utime",UnixTime)
+	AddRecord("year",loctime->tm_year+1900);
+	AddRecord("mon",loctime->tm_mon+1);
+	AddRecord("day",loctime->tm_mday);
+	AddRecord("hour",loctime->tm_hour);
+	AddRecord("min",loctime->tm_min);
+	AddRecord("sec",loctime->tm_sec);
+	AddRecord("wday",loctime->tm_wday);
+	AddRecord("yday",loctime->tm_yday);
+	free(buffer);
+	#undef POSTFIXSIZE 
+	#undef AddRecord
 }

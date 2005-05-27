@@ -18,6 +18,8 @@
  * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, 
  * MA  02111-1307  USA  or visit http://www.gnu.org/copyleft/gpl.html
  *
+ *     patch by Cyrille Lefevre in description reading (2005-05-27, 1.0a16)
+ *
  *************************************************************************/
 #include "riff.h"
 
@@ -96,7 +98,7 @@ int riffparse(vlist_t* list, FILE* file, int s){
 				b2DWi(fcc,buffer,pos);
 				while(pos<size){
 					switch(fcc) {
-						case FOURCC_strh:
+						case FCC_strh:
 							b2DW(type,buffer,pos+4);
 							b2DW(scale,buffer,pos+24);
 							b2DW(rate,buffer,pos+28);
@@ -106,9 +108,9 @@ int riffparse(vlist_t* list, FILE* file, int s){
 							pos+=60;
 							fcc=0;
 							break;
-						case FOURCC_strf:
+						case FCC_strf:
 							switch(type){
-								case FOURCC_vids:
+								case FCC_vids:
 									error_status=0;
 									video[v_c][V_x]=b2DWv(buffer,pos+8);
 									video[v_c][V_y]=b2DWv(buffer,pos+12);
@@ -121,7 +123,7 @@ int riffparse(vlist_t* list, FILE* file, int s){
 									v_c++;
 									if(v_c>=MAX_STREAMS)v_c=MAX_STREAMS-1;
 									break;
-								case FOURCC_auds:
+								case FCC_auds:
 									audio[a_c][A_cc]=b2Wv(buffer,pos+4);
 									audio[a_c][A_ch]=b2Wv(buffer,pos+6);
 									audio[a_c][A_freq]=b2DWv(buffer,pos+8);
@@ -153,7 +155,10 @@ int riffparse(vlist_t* list, FILE* file, int s){
 				if(!fread(buffer,size-4,1,file)){if(buffer)free(buffer);buffer=NULL;continue;}
 				pos=0;
 				while(pos<size){
-					if(!buffer[pos]){pos++;continue;}
+					if(!buffer[pos] || buffer[pos] != 'I'){ /*search for desc. begin*/
+						pos++;
+						continue;
+					}
 					b2DW(desc_size,buffer,pos+4);
 					if(desc_size>size-pos) desc_size=size-pos-1;
 					desc_value=malloc(desc_size+1);
@@ -164,9 +169,9 @@ int riffparse(vlist_t* list, FILE* file, int s){
 					desc_name[4]=0;
 					desc_value[desc_size]=0;
 					if(strcmp(desc_name,"ISFT")){/*skip 'Software' entry */
+						d_c++;
 						SetIdxStringVar(list,"d1%d.name",d_c,desc_name);
 						SetIdxStringVar(list,"d1%d.value",d_c,desc_value);
-						d_c++;
 					}
 					pos+=8+desc_size;
 				}

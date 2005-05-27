@@ -30,7 +30,7 @@
 const char VTS_SIGNATURE[12]="DVDVIDEO-VTS";
 const unsigned short int X_table[4][2]={ {720,720}, {704,704}, {352,352}, {352,352} };
 const unsigned short int Y_table[4][2]={ {480,576}, {480,576}, {480,576}, {240,288} };
-const unsigned int Codec_table[8]={ FOURCC_AC3, 0, FOURCC_MPG1, FOURCC_MPG2, FOURCC_LPCM, 0, FOURCC_DTS, 0};
+const unsigned int Codec_table[8]={ FCC_AC3, 0, FCC_MPG1, FCC_MPG2, FCC_LPCM, 0, FCC_DTS, 0};
 
 int ifoparse(vlist_t*list,FILE* file, int s){ /*supported only a vts_xx_0.ifo, video_ts.ifo is not needed for AVInfo*/
     char buffer[0x316];
@@ -50,10 +50,10 @@ int ifoparse(vlist_t*list,FILE* file, int s){ /*supported only a vts_xx_0.ifo, v
     video[0][V_exist]=1;
 	switch(buffer[0x200]&0xC){
 		case 0:
-			video[0][V_cc]=FOURCC_MPG1;
+			video[0][V_cc]=FCC_MPG1;
 			break;
 		case 0x40:
-			video[0][V_cc]=FOURCC_MPG2;
+			video[0][V_cc]=FCC_MPG2;
 			break;
 	}
 	type=(buffer[0x200]&0x10)>>4;

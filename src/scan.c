@@ -34,44 +34,83 @@ void RemoveQuotas(char* line){
 
 
 filelist_t* InitFilelist(const char* filelistname){
-	FILE* q=stdin;
+	FILE* f=NULL;
+	DIR* d=NULL;
 	filelist_t* retval=NULL;
-	int mode=-1;
+	int mode=0;
+	struct stat fs;
 	if(*filelistname=='-'){
 		if(filelistname[1]==0){
-			q=stdin;
-			mode=1;
+			f=stdin;
+			mode=FL_STDIN;
 		}
 	}else {
-			q=fopen(filelistname,"r");
-			mode=0;
+			if(!stat(filelistname,&fs)){
+				if(S_ISDIR(fs.st_mode)){
+					d=opendir(filelistname);
+					if(d) mode=FL_DIR;
+				}
+				if(S_ISREG(fs.st_mode)){
+					f=fopen(filelistname,"r");
+					if(f) mode=FL_FILE;
+				}
+				if(!S_ISREG(fs.st_mode)&&!S_ISDIR(fs.st_mode)) fprintf(stderr, "%s is not regular file or directory\n",filelistname);
+			}
 	}
-	if(q){
+	if(mode!=FL_ERROR){
 		assert(retval=malloc(sizeof(filelist_t)));
 		retval->filelistname=strdup(filelistname);
-		retval->filelisthandle=q;
+		retval->filelisthandle=f;
+		retval->dirhandle=d;
 		retval->mode=mode;
 	}
 	return retval;
 }
 
 char* GetNext(filelist_t* filelist){
+#ifdef WINDOWS
+	#define SEPARATOR '\\'
+#endif
+#ifndef WINDOWS
+	#define SEPARATOR '/'
+#endif
 	char* retval=NULL;
-	if(filelist->mode<2&&filelist->filelisthandle){ /*use text filelist (file or stdin)*/
-		retval=malloc(MAX_PATH+3);
-		if(fgets(retval,MAX_PATH+2,filelist->filelisthandle)){
-			CropCRLF(retval);
-			if(*retval=='"') RemoveQuotas(retval); /*for windows compability, qutas around filename will be removed*/
-		}else{
-			free(retval);
-			retval=NULL;
-		}
+	struct dirent* de=NULL; 
+	switch(filelist->mode){
+		case FL_STDIN: /*passthrough*/
+		case FL_FILE:
+			retval=malloc(MAX_PATH+3);
+			if(fgets(retval,MAX_PATH+2,filelist->filelisthandle)){
+				CropCRLF(retval);
+				if(*retval=='"') RemoveQuotas(retval); /*for windows compability, qutas around filename will be removed*/
+			}else{
+				free(retval);
+				retval=NULL;
+			}
+			break;
+		case FL_DIR:
+			do{
+				de=readdir(filelist->dirhandle);
+				if(!de) break;
+			}while(!strcmp(de->d_name,".")||!strcmp(de->d_name,".."));
+			if(de){
+				assert(retval=malloc(strlen(de->d_name)+strlen(filelist->filelistname)+2));
+				sprintf(retval,"%s%c%s",filelist->filelistname,SEPARATOR,de->d_name);
+			}
+			break;
+		default: fprintf(stderr,"error in scan.c, incorrect filelist mode (%d)\n",filelist->mode);
 	}
 	return retval;
 }
 
 void CloseFilelist(filelist_t* filelist){
-	if(filelist->mode<1) fclose(filelist->filelisthandle);
+	switch(filelist->mode){
+		case FL_FILE: fclose(filelist->filelisthandle);
+				break;
+		case FL_DIR: closedir(filelist->dirhandle);
+				break;
+		}
+	free(filelist->filelistname);
 	free(filelist);
 }
 
@@ -163,6 +202,7 @@ void PrepareName(vlist_t* list,const char* in){
 	}
 	if(name)SetStringVar(list,"name",in);
 	if(!ext_found) SetStringVar(list,"ext","");
+	printf("debug:%s\n",in);
 }
 
 
@@ -170,13 +210,23 @@ void PrepareName(vlist_t* list,const char* in){
 FILE* PrepareFile(const char* filename, vlist_t* list, config_t* cfg){
 	FILE* retval;
 	char buffer[80];
+	struct stat filestat;
 	PrepareName(list,filename);	
-	retval=fopen(filename,"rb");
-	if(retval){
-		fseek(retval,0,SEEK_END); /*TODO: do not use a fseek to get a size, use a stat()*/
-		SetNumericVar(list,"size",(int)ftell(retval)); /*TODO size_t!=int!*/
-		fseek(retval,cfg->offset,SEEK_SET);
+	if(stat(filename,&filestat)==-1){
+		SetStringVar(list,"error","i/o error"); /*TODO errno */
+		return NULL;
+	};
+	SetNumericVar(list,"size",(int)filestat.st_size);/*TODO size_t!=int!*/
+	AddDate(list,"access.",filestat.st_atime);
+	AddDate(list,"modify.",filestat.st_mtime);
+	AddDate(list,"status.",filestat.st_ctime);
+	if(!S_ISREG(filestat.st_mode)){
+		SetStringVar(list,"error","not a regular file");
+		return NULL;
 	}
+	retval=fopen(filename,"rb");
+	if(retval)	
+		fseek(retval,cfg->offset,SEEK_SET);
 	else{
 			snprintf(buffer,80,"unable open file (error #%d)",errno);
 			SetStringVar(list,"error", "unable to open file");
@@ -207,34 +257,65 @@ vlist_t* ScanFile(const char* filename, config_t* cfg){
 	return retval;
 }
 
+fcache_t* ScanFileList(const char* filelistname, fcache_t* fcache, config_t* cfg){
+	char* filename;
+	fcache_t* fc;
+	filelist_t* filelist;
+	vlist_t* filedesc;
+	struct stat fs;
+	if(!fcache) 
+		fc=InitFileCache(); /*replace to Load (TODO)*/
+	else 
+		fc=fcache;
+	filelist=InitFilelist(filelistname);
+	if(filelist){
+		while((filename=GetNext(filelist))){
+			if(!*filename) break;
+			if(stat(filename,&fs)){
+				/*todo??? error processing*/
+			}
+			if(S_ISDIR(fs.st_mode)){
+				printf("debug:%d,%s\n",cfg->reccurent, filename);
+				if(cfg->reccurent) fc=ScanFileList(filename,fc,cfg);
+				continue;
+			}
+			filedesc=ScanFile(filename,cfg);
+			if(filedesc)  AddRecord(fc,filename,filedesc);
+			if(cfg->wait) sleep(10);
+			free(filename);
+		}
+		CloseFilelist(filelist);
+	}else
+		fprintf(stderr," * unable to open filelist:%s\n",filelistname);
+	return fc;
+}
+
 
 fcache_t* scan(config_t* cfg){
 /*main scan function*/
-	fcache_t* fcache=InitFileCache(); /*replace to Load (TODO)*/
 	vlist_t* filedesc;
-	filelist_t* filelist;
-	char* filename;
+	struct stat fs;
+	fcache_t* fcache=NULL;
 	cfg->scanbegin=time(NULL);
-	if(fcache){
-		if(cfg->filelist){ /*filelist*/
-			filelist=InitFilelist(cfg->filelist);
-			if(!filelist){
-				ClearCache(fcache);
-				fprintf(stderr," * unable to open filelist\n");
-				return NULL;
+	if(cfg->filelist) fcache=ScanFileList(cfg->filelist,fcache,cfg);
+	if(cfg->filename){
+		if(!stat(cfg->filename,&fs)){
+			if(S_ISREG(fs.st_mode)){
+				filedesc=ScanFile(cfg->filename,cfg);
+				if(filedesc) AddRecord(fcache,cfg->filename,filedesc);
 			}
-			while((filename=GetNext(filelist))){
-				filedesc=ScanFile(filename,cfg);
-				if(filedesc)  AddRecord(fcache,filename,filedesc);
-				if(cfg->wait) sleep(10);
-				free(filename);
+			if(S_ISDIR(fs.st_mode)){
+				/*add recurse*/
+				fcache=ScanFileList(cfg->filename,fcache,cfg);
 			}
-			CloseFilelist(filelist);
+			if(!S_ISDIR(fs.st_mode)&&!S_ISREG(fs.st_mode)){
+				fprintf(stderr,"%s in not a directory or regular file\n",cfg->filename);
+			}
 		}
-		else{ /* single file or directory*/
-			filedesc=ScanFile(cfg->filename,cfg);
-			if(filedesc) AddRecord(fcache,cfg->filename,filedesc);
+		else{
+			fprintf(stderr,"%s - i/o error\n",cfg->filename);
 		}
 	}
 	return fcache;
 }
+

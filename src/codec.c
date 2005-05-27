@@ -31,13 +31,13 @@ typedef struct{
 
 const codec_data codecs[]={
 	{85, "mp3"},
-	{FOURCC_DIVX, "DivX"},
-	{FOURCC_DIV3, "DivX3"},
-	{FOURCC_XVID, "XviD"},
-	{FOURCC_OGG, "Vorbis"},
-	{FOURCC_DX50, "DivX5"},
-	{FOURCC_MPG1, "MPEG1"},
-	{FOURCC_MPG2, "MPEG2"}
+	{FCC_DIVX, "DivX"},
+	{FCC_DIV3, "DivX3"},
+	{FCC_XVID, "XviD"},
+	{FCC_OGG, "Vorbis"},
+	{FCC_DX50, "DivX5"},
+	{FCC_MPG1, "MPEG1"},
+	{FCC_MPG2, "MPEG2"}
 };
 
 const char* fcctoa (const FOURCC fcc){

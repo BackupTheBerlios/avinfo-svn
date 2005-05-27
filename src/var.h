@@ -171,6 +171,7 @@ void AddAudioVideo(vlist_t* list, unsigned int video[MAX_STREAMS][VIDEO_INFO_SIZ
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <time.h>
 #include "common.h"
 
 typedef struct var{
@@ -250,4 +251,5 @@ void PrintVList(FILE* out,vlist_t* list);
 void GetMinMaxVarValueByMaskName(vlist_t* list, char* mask, int *min, int *max);
 void AddList(vlist_t* to, vlist_t* newlist);
 void ViewAllLists(vlist_t* start);
+void AddDate(vlist_t* list, char* prefix,time_t UnixTime);
 #endif

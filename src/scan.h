@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <errno.h>
+#include <sys/stat.h>
+#include <dirent.h>
 #include "var.h"
 #include "confset.h"
 #include "filecach.h"
@@ -19,8 +21,9 @@
 
 typedef struct{ 
 	char* filelistname; 
-	int mode;/*for future use*/
+	int mode;
 	FILE* filelisthandle;
+	DIR* dirhandle;
 }filelist_t;
 
 typedef int (*modulefunc) (vlist_t* list, FILE* file, int flags ); 
@@ -32,5 +35,12 @@ typedef struct{
 }module_t;
 
 fcache_t* scan(config_t* cfg);
+
+enum{
+	FL_ERROR=0,
+	FL_STDIN,
+	FL_FILE,
+	FL_DIR
+};/*name for filelist modes*/
 
 #endif
