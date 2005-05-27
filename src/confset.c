@@ -63,7 +63,6 @@ const optd_t parameter[]={
 	{	"silent",		's',	OPTION_silent, 		VT_number,	"do not print any on screen"		},/*no implement*/
 	{	"wait",			'w',	OPTION_wait, 		VT_number,	"pause between scan operation (ms)"	},/*implement (bug)*/
 	{	"sort",			's',	OPTION_sort, 		VT_number,	"sort output by filename"			},/*no implement*/
-	{	"crc-verify",	'V',	OPTION_crc, 		VT_number,	"check CRC32 (if filename contain CRC) (SLOW!)"	},/*no implement*/
 	{	"list",			'l',	OPTION_list, 		VT_string,	"use a filelist (use '-' as a stdin)"	},/*implement*/
 	{	"config",		'c',	OPTION_config, 		VT_string,	"use a different config file"	},/*implement*/
 	{	"template-file",'T',	OPTION_template_file, VT_string,"use a different template file"	},/*implement*/
@@ -83,6 +82,7 @@ const optd_t parameter[]={
 	{	"title",		0,		OPTION_title,		VT_string,	"set up title (for html templates)"	},/*implement*/
 	{	"report-unknown",0,		OPTION_reportUnknown,VT_unknown,	"report about files with unknown format"},/*implement*/
 	{	"offset",		0,		OPTION_offset,		VT_number,	"begin scaning from specified offset (do not use in filelist!)"},/*implement*/
+	{	"verbose",		'V',	OPTION_verbose,		VT_unknown, "print filenames to stderr while scaning"},/*implement*/
 	{	"filename",		0,		OPTION_filename,	VT_string,	""}/*implement*/
 };
 
@@ -569,9 +569,6 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 			case OPTION_sort:
 				conf->sort=in[c].number_value;
 				break;
-			case OPTION_crc:
-				conf->checkcrc=in[c].number_value;
-				break;
 			/*path option*/
 			case OPTION_list:
 				if(conf->filelist) free(conf->filelist);
@@ -643,6 +640,9 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 				break;
 			case OPTION_offset:
 				conf->offset=in[c].number_value;
+				break;
+			case OPTION_verbose:
+				conf->verbose=1;
 				break;
 			case OPTION_help:
 				conf->noerrorclose=1;

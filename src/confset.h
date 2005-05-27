@@ -61,7 +61,6 @@ enum{
 	OPTION_silent,
 	OPTION_wait,
 	OPTION_sort,
-	OPTION_crc,
 	OPTION_list,
 	OPTION_config,
 	OPTION_template_file,
@@ -81,6 +80,7 @@ enum{
 	OPTION_title,
 	OPTION_reportUnknown,
 	OPTION_offset,
+	OPTION_verbose,
 	OPTION_filename
 };
 
@@ -120,6 +120,7 @@ typedef struct {
 	int reportUnknown;
 	int offset; /*scaning offset in file*/
 	int appendFlag; /*open output file for append instead overwrite*/
+	int verbose; /*print filename to stderr while scaning*/
 	time_t scanbegin;
 	time_t reportbegin;
 	time_t timeend;

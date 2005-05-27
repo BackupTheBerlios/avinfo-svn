@@ -202,7 +202,6 @@ void PrepareName(vlist_t* list,const char* in){
 	}
 	if(name)SetStringVar(list,"name",in);
 	if(!ext_found) SetStringVar(list,"ext","");
-	printf("debug:%s\n",in);
 }
 
 
@@ -243,6 +242,7 @@ vlist_t* ScanFile(const char* filename, config_t* cfg){
 	}
 	if(module){
 		handle=PrepareFile(filename,retval,cfg);
+		if(cfg->verbose) fprintf(stderr,"%s\n",filename);
 		if(handle){
 			if(!module(retval,handle,cfg->flags))  /*	*SCAN*		*/
 				SetStringVar(retval,"error","format unrecognized");
@@ -275,7 +275,6 @@ fcache_t* ScanFileList(const char* filelistname, fcache_t* fcache, config_t* cfg
 				/*todo??? error processing*/
 			}
 			if(S_ISDIR(fs.st_mode)){
-				printf("debug:%d,%s\n",cfg->reccurent, filename);
 				if(cfg->reccurent) fc=ScanFileList(filename,fc,cfg);
 				continue;
 			}
