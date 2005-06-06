@@ -20,7 +20,7 @@
  *
  *************************************************************************/
 #include "readtpl.h"
-
+#include "memleak.h"
 template_t* InitTemplate(const int namec, const char* namev[]){
 	template_t* retval=NULL;
 	int c;
@@ -136,3 +136,14 @@ template_t* ReadTemplate(const char* TemplateFileName, const char* TemplateName)
 }
 
 
+void DeleteTemplate(template_t* tpl){
+	int c;
+	if(tpl){
+		for(c=0;c<tpl->templ_n;c++){
+			if(tpl->content[c].text) free(tpl->content[c].text);
+			if(tpl->content[c].name) free(tpl->content[c].name);
+		}
+		free(tpl->content);
+		free(tpl);
+	}
+}

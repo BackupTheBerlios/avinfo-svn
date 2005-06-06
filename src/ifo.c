@@ -26,7 +26,7 @@
  /*note: this is a test version, due lack of information about DVD*/
 
 #include "ifo.h"
-
+#include "memleak.h"
 const char VTS_SIGNATURE[12]="DVDVIDEO-VTS";
 const unsigned short int X_table[4][2]={ {720,720}, {704,704}, {352,352}, {352,352} };
 const unsigned short int Y_table[4][2]={ {480,576}, {480,576}, {480,576}, {240,288} };

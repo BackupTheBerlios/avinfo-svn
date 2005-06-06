@@ -21,14 +21,7 @@
  *************************************************************************/
 
 #include "filecach.h"
-
-/*void StripName(char* name){
-	int q=strlen(name);
-	int c;
-	for(c=q;c>=0;c--)
-		if(name[c]=='\\'||name[c]=='/')
-			memmove(name,name+c+1,q-c);
-}*/
+#include "memleak.h"
 
 
 char* CopyStripName(const char* name){
@@ -95,7 +88,7 @@ inline vlist_t*  GetRecord(const fcache_t* c, const int number){
     return c->record[number].var_list;
 }
 
-#define DEFAULT_FCACHE_RECORDS 2048 
+#define DEFAULT_FCACHE_RECORDS 1024
 
 fcache_t* InitFileCache(void){
 /*dump mode - create cache in memory*/
@@ -117,12 +110,13 @@ int LoadCache(fcache_t* fache, const char* filename, config_t *cfg){
 	return 0;
 }
 
-void ClearCache(fcache_t* fcache){
+void CloseFileCache(fcache_t* fcache){
 	int c;
 	for(c=0;c<fcache->used_records;c++){
 		DeleteVList(fcache->record[c].var_list);
 		free(fcache->record[c].filename);
 	}
+	free(fcache->record);
 	if(fcache->fCacheName) free(fcache->fCacheName);
 	if(fcache->fCacheHandle) fclose(fcache->fCacheHandle);
 	free(fcache);

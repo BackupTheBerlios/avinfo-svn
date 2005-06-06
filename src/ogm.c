@@ -24,6 +24,7 @@
 
  /* use a tabulation size 4 spaces for normal editig*/
 #include "ogm.h"
+#include "memleak.h"
 
 #define DEFAULT_PARSE_BLOCK 32768
 
@@ -51,9 +52,9 @@ comment_t CommentSplit(char*CommentVector, int CommentSize){
 				ret_val.value=malloc(CommentSize-c+1);
 				memcpy(ret_val.value,CommentVector+c+1,CommentSize-c-1);
 				ret_val.value[CommentSize-c-1]=0;
+				break;
 			}
 		}
-	
 	}
 	if(!ret_val.name){
 		ret_val.name=calloc(1,1);
@@ -179,19 +180,26 @@ int ogmparse(vlist_t* list,FILE* file, int s){
 					comment=CommentSplit(buffer+comment_base+comment_offset+4,comment_size);
 					comment_offset+=4+comment_size;
 					if(!strcmp((char*)comment.name,"LANGUAGE")){ /*process a LANGUAGE comment, make a long name short (e.g. JAPANESE -> jap)*/
-						if(strlen((char*)comment.value)>3){
+						if(strlen((char*)comment.value)>3)
 							comment.value[3]=0;
-							lowcase(comment.value);
-							sprintf((char*)tempbuff,"%c%d.lang",streams[curr_stream_num].type,streams[curr_stream_num].num+1);
-							SetStringVar(list,tempbuff,comment.value);
+						lowcase(comment.value);
+						sprintf((char*)tempbuff,"%c%d.lang",streams[curr_stream_num].type,streams[curr_stream_num].num+1);
+						SetStringVar(list,tempbuff,comment.value);
+						free(comment.name);
+						free(comment.value);
+						continue;
+					}
+					if(strlen((char*)comment.name)>=7){/*ignore stupid descriptions from ogm navigation*/
+					   	if(!memcmp(comment.name,"CHAPTER",7)) {
 							free(comment.name);
 							free(comment.value);
 							continue;
 						}
-					}
-					if(strlen((char*)comment.name)>=7){/*ignore stupid descriptions from ogm navigation*/
-					   	if(!memcmp(comment.name,"CHAPTER",7)) continue;
-					   	if(!memcmp(comment.name,"LWING_GAIN",10)) continue;
+					   	if(!memcmp(comment.name,"LWING_GAIN",10)){
+							free(comment.name);
+							free(comment.value);
+							continue;
+						}
 					}
 					d_c++;
 					SetIdxStringVar(list,"d1%d.name",d_c,comment.name);

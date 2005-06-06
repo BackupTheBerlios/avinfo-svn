@@ -25,6 +25,7 @@
 
  /* use a tabulation size 4 spaces for normal editig*/
 #include "mkv.h"
+#include "memleak.h"
 #define BUFFER_SIZE 0x4000
 #define MAX_STRING_SIZE 1024
 
@@ -249,8 +250,8 @@ int mkvparse(vlist_t *list,FILE* file, int s){
 		p+=eSize;/*skip unknown or uninteresting*/
 	}while(1);
 	AddAudioVideo(list,video,audio);
-	tstr1=strdup("dn.lang");
-	tstr2=strdup("dn.cc");
+	tstr1=strdup("d?.lang");
+	tstr2=strdup("d?.cc");
 	if(tstr1&&tstr2){
 		for(c=0;c<MAX_STREAMS;c++){
 			for(c2=0;c2<4;c2++){

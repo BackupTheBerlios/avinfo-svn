@@ -21,6 +21,7 @@
  *************************************************************************/
 
 #include "scan.h"
+#include "memleak.h"
 
 void RemoveQuotas(char* line){
 	int lineLen=strlen(line);
@@ -270,12 +271,16 @@ fcache_t* ScanFileList(const char* filelistname, fcache_t* fcache, config_t* cfg
 	filelist=InitFilelist(filelistname);
 	if(filelist){
 		while((filename=GetNext(filelist))){
-			if(!*filename) break;
+			if(!*filename) {
+				free(filename);
+				break;
+			}
 			if(stat(filename,&fs)){
 				/*todo??? error processing*/
 			}
 			if(S_ISDIR(fs.st_mode)){
 				if(cfg->reccurent) fc=ScanFileList(filename,fc,cfg);
+				free(filename);
 				continue;
 			}
 			filedesc=ScanFile(filename,cfg);

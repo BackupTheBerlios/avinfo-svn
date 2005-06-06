@@ -20,7 +20,7 @@
  *
  *************************************************************************/
 #include "report.h"
-
+#include "memleak.h"
 
 void ParseTemplate(FILE* output, char* template, int linelength, vlist_t* list){
 	lexerctl_t  lexerctl;
@@ -40,7 +40,7 @@ void report(fcache_t* fcache, FILE* output, config_t* cfg){
 	int c;
 	vlist_t* FileStatistic=GatherStatistic(fcache,cfg);
 	cfg->reportbegin=time(NULL);
-	SetNumericVar(FileStatistic,"run.scan.time",cfg->reportbegin-cfg->scanbegin);
+	SetNumericVar(FileStatistic,"run.scan.time",cfg->reportbegin - cfg->scanbegin);
 	if(!cfg->falltobuiltintemplate){ /*print head*/
 		ParseTemplate(output,cfg->template->content[0].text,cfg->template->content[0].textlinesize,FileStatistic);
 	}
@@ -58,5 +58,6 @@ void report(fcache_t* fcache, FILE* output, config_t* cfg){
 		SetNumericVar(FileStatistic,"run.report.time",cfg->timeend-cfg->reportbegin);
 		ParseTemplate(output,cfg->template->content[2].text,cfg->template->content[2].textlinesize,FileStatistic);
 	}
+	if(FileStatistic) DeleteVList(FileStatistic);
 }
 

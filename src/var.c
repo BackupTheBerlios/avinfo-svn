@@ -1,4 +1,5 @@
 #include "var.h"
+#include "memleak.h"
 
 vlist_t* CreateVList(vlist_t* PrevList){
 	vlist_t *retval=malloc(sizeof(vlist_t));

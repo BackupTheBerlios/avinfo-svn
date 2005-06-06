@@ -19,7 +19,8 @@
  * MA  02111-1307  USA  or visit http://www.gnu.org/copyleft/gpl.html
  *
  *************************************************************************/
- #include "common.h"
+ #include "common.h" 
+ #include "memleak.h"
 
 int CHARS_PRINT=0;
 int MAX_CHARS;

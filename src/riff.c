@@ -22,7 +22,7 @@
  *
  *************************************************************************/
 #include "riff.h"
-
+#include "memleak.h"
 #define MAX_ALLOWED_AVI_HEADER_SIZE 131072
 #define SAFE_PAD 128
 #define FRAME_SIZE 65536 /*for index*/
@@ -32,6 +32,7 @@
 #define b2Wv(buffer,offset) buffer[offset]+(buffer[offset+1]<<8)
 #define b2DWi(value,buffer,offset) {value=buffer[offset++];value+=buffer[offset++]<<8;value+=buffer[offset++]<<16;value+=buffer[offset++]<<24;}
 #define INSb(value,buffer,offset) {value=((value>>8)+((buffer[offset++])<<24));}
+
 
 const char* patterns[]={
 "LIST\0\0\0\0hdrl",
@@ -75,6 +76,8 @@ int riffparse(vlist_t* list, FILE* file, int s){
 	unsigned int desc_size=0;
 	unsigned int d_c=0;
 
+	int dbg_cnt=0;
+
 	memset(video,0,sizeof(video));
 	memset(audio,0,sizeof(audio));
 	memset(bps,0,sizeof(bps));
@@ -82,6 +85,7 @@ int riffparse(vlist_t* list, FILE* file, int s){
 	if(!fread(scan,12,1,file)) return 0;
 	if(advmemcmp(scan, avi_signature,12)) return 0; /*non avi file*/
 	while(cont){
+
 		if(!fread(scan,12,1,file)){cont=0;continue;}
 		b2DW(size,scan,4);
 		if(size<4) size=4;
@@ -90,10 +94,10 @@ int riffparse(vlist_t* list, FILE* file, int s){
 		switch(c){
 			case 0:				/*header reading*/
 				if(size>MAX_ALLOWED_AVI_HEADER_SIZE) return 0; /*header too big*/
-				buffer=malloc(size+SAFE_PAD-4);
-				if(!buffer) return 0;
+				assert(buffer=malloc(size+SAFE_PAD-4));
 				memset(buffer+size-4,SAFE_PAD-4,0);
-				if(!fread(buffer,size-4,1,file)) {cont=0;continue;}
+				if(!fread(buffer,size-4,1,file)) 
+					goto riff_loop_end;
 				pos=76;
 				b2DWi(fcc,buffer,pos);
 				while(pos<size){
@@ -103,7 +107,7 @@ int riffparse(vlist_t* list, FILE* file, int s){
 							b2DW(scale,buffer,pos+24);
 							b2DW(rate,buffer,pos+28);
 							b2DW(length,buffer,pos+36);
-							fps=(double)rate/(double)(scale?scale:0x7FFFFFFF);
+							fps=(double)rate/(double)(scale?scale:0x7FFFFFFF); /*change 7f...f to 0?*/
 							length=(int)(length/fps);
 							pos+=60;
 							fcc=0;
@@ -152,7 +156,8 @@ int riffparse(vlist_t* list, FILE* file, int s){
 				if(size<16) continue;
 				buffer=malloc(size);
 				if(!buffer) continue;
-				if(!fread(buffer,size-4,1,file)){if(buffer)free(buffer);buffer=NULL;continue;}
+				if(!fread(buffer,size-4,1,file))
+					{if(buffer)free(buffer);buffer=NULL;continue;}
 				pos=0;
 				while(pos<size){
 					if(!buffer[pos] || buffer[pos] != 'I'){ /*search for desc. begin*/
@@ -174,6 +179,8 @@ int riffparse(vlist_t* list, FILE* file, int s){
 						SetIdxStringVar(list,"d1%d.value",d_c,desc_value);
 					}
 					pos+=8+desc_size;
+					free(desc_name);
+					free(desc_value);
 				}
 				if(d_c){
 					SetNumericVar(list,"d1.num",d_c);
@@ -188,7 +195,7 @@ int riffparse(vlist_t* list, FILE* file, int s){
 			case 3:			/*idx1 processing*/
 				if(size<FRAME_SIZE) frame_size=size; else frame_size=FRAME_SIZE;
 				buffer=malloc(frame_size);
-				if(!buffer) return !error_status;
+				if(!buffer) return !error_status; /*if we do not read index this do not mean an error ... we can success in some cases*/
 				pos=0;
 				memcpy(buffer,scan+8,4);
 				if(!fread(buffer+4,frame_size-4,1,file)) readed_bytes=size; /*just skip bps calculation*/
@@ -229,12 +236,16 @@ int riffparse(vlist_t* list, FILE* file, int s){
 				}
 				cont=0;
 				break;
+				if(buffer) free(buffer);
+				buffer=NULL;
+			case 4: 
 		}
 		if(ftell(file)&0x1){/* note - if entry not aligied to word, try again, (offset+1), needs for some soft, like AviUtl.*/
 			fseek(file,-3,SEEK_CUR);
 		}
         else fseek(file,size-4,SEEK_CUR);
 	}
+	riff_loop_end:
 	if(buffer) free(buffer);
 	buffer=NULL;
 	if(error_status) return 0;

@@ -23,6 +23,7 @@
 
 #include "ass.h"
 #include "ass.tab.h"
+#include "memleak.h"
 #define YYERROR_VERBOSE
 
 #define 		YYLEX_PARAM 	lexer_ctl
@@ -159,7 +160,7 @@ var: VAR_PART {$$=$1;}
 exp: 		E_ATOM{$$=$1;}| 
 			var { 
 				$$=GetVar(ctl->list,$1);
-				free($1);
+				free($1); /*$1 - name*/
 
 			}|
 			PP var{/*TODO!!! fix memory leak*/

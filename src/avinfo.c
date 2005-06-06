@@ -20,7 +20,7 @@
  *
  *************************************************************************/
 #include "avinfo.h"
-
+#include "memleak.h"
 
 int main( int argc, char* argv[] ){
     config_t *cfg;
@@ -44,6 +44,10 @@ int main( int argc, char* argv[] ){
 		}
 	}else output=stdout;
 	report(fcache,output,cfg);
+	CloseFileCache(fcache);
+	CloseConfig(cfg);
+	dbg_mem_stat();
+	dbg_heap_dump("");
 	if(output!=stdout) fclose(output);
 	return 0;
 }

@@ -20,7 +20,7 @@
  *
  *************************************************************************/
 #include "text.h"
-
+#include "memleak.h"
 extern int textparse (vlist_t* list, FILE* file, int flags ){
 /*** This module just detect language of subtitle file (only eng/rus check)
 	 v0.1 beta. Ideas acepting and will be taking with pleasure*/

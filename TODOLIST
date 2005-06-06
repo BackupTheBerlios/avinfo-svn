@@ -1,0 +1,5 @@
+add perror to f* operation (scan.c, confset.c, readtpl.c)
+change command line parsing to GNU (e.g. -o filename instead -o=filename)
+http://www.gnu.org/prep/standards/html_node/Errors.html#Errors
+http://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html#Command_002dLine-Interfaces
+http://www.gnu.org/prep/standards/html_node/Internationalization.html#Internationalization

@@ -156,4 +156,6 @@ typedef struct{/*filling while scanned*/
 int ReadConf(const char* ConfigName, const optd_t* OptList, const int OptListSize, optv_t* conf, const int AllowChange);
 extern optv_t* ReadCommandLine(int argc, char* argv[], optv_t* retopt, const optd_t* OptList, const int OptListSize);
 int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptListSize);
+void ClearOpt(optv_t* optv);
+void CloseConfig(config_t *cfg);
 #endif

@@ -22,6 +22,7 @@
 #define _POSIX_C_SOURCE 200112L
 
 #include "mpeg.h"
+#include "memleak.h"
 #define MAX_READING_BYTES 32768
 #define MAX_TRYS 16
 #define MPEG_ISO_11172_END_CODE 0x000001B9
@@ -275,14 +276,14 @@ void GetId3v1(vlist_t* list,FILE* file){
 	buffer[128]=0;
 	IncStreamCounter(list,'d');
 	SetStringVar(list,"d11.name","title");	
-	SetStringVar(list,"d11.value",strdup(buffer+3));
+	SetStringVar(list,"d11.value",buffer+3);
 	SetStringVar(list,"d12.name","artist");
-	SetStringVar(list,"d12.value",strdup(buffer+33));
+	SetStringVar(list,"d12.value",buffer+33);
 	SetStringVar(list,"d13.name","album");
-	SetStringVar(list,"d13.value",strdup(buffer+63));
+	SetStringVar(list,"d13.value",buffer+63);
 	buffer[97]=0;
 	SetStringVar(list,"d14.name","year");
-	SetStringVar(list,"d14.value",strdup(buffer+93));
+	SetStringVar(list,"d14.value",buffer+93);
 	SetNumericVar(list,"d1.num",4);
 }
 

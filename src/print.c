@@ -21,7 +21,7 @@
  *************************************************************************/
 
 #include "print.h"
-
+#include "memleak.h"
 #define DEFAULT_LINE_BUFFER_SIZE 4096
 #define MAX_TAB_SUPPORT 64
 #define MAX(a,b) a>b?a:b

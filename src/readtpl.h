@@ -53,9 +53,9 @@ typedef struct{
 	#define MAX_TEMPLATE_LINE_SIZE LINE_MAX
 #endif
 
-#define DEFAULT_TEMPLATE_SIZE 16*MAX_TEMPLATE_LINE_SIZE
+#define DEFAULT_TEMPLATE_SIZE 4*MAX_TEMPLATE_LINE_SIZE
 #define MAX_TEMPLATE_SIZE 1024*1024
 
 template_t* ReadTemplate(const char* TemplateFileName, const char* TemplateName);
-
+void DeleteTemplte(template_t* tpl);
 #endif

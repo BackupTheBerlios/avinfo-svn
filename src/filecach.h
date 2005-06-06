@@ -58,7 +58,7 @@ int CacheCheck (const fcache_t *c, const char* filename);
 int AddRecord(fcache_t* c,const char* name, vlist_t *l);
 inline vlist_t* GetRecord(const fcache_t* c, const int number);
 
-void ClearCache(fcache_t* fcache);
+void CloseFileCache(fcache_t* fcache);
 
 /** Internal Function (invisible outsize module) **/
 

@@ -20,7 +20,7 @@
  *
  *************************************************************************/
 #include "statisti.h"
-
+#include "memleak.h"
 
 typedef struct{
 	char* searchName;
@@ -81,7 +81,7 @@ vlist_t* GatherStatistic(fcache_t* fcache, config_t *cfg){
 		tempLen=GetNumericVar(fcache->record[c].var_list,"v1.l");
 		if(!tempLen) tempLen=GetNumericVar(fcache->record[c].var_list,"a1.l");
 		fileCommonLength+=tempLen;
-		tempLen=strlen(GetStringVar(fcache->record[c].var_list,"name"));
+		tempLen=strlen(GetROStringVar(fcache->record[c].var_list,"name"));
 		if(tempLen>maxFileNameLen) maxFileNameLen=tempLen;
 		if(!minFileNameLen||minFileNameLen>tempLen) minFileNameLen=tempLen;		
 	}

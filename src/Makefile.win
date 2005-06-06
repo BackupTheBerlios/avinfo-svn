@@ -4,8 +4,9 @@ CXX=gcc
 COPT=-O3 -ggdb -posix -Wall --pedantic -nostdinc++ -funsigned-char
 scanmodules=riff.o mpeg.o text.o ifo.o ogm.o mkv.o
 coremodules=common.o var.o scan.o report.o statisti.o avinfo.o filecach.o print.o ass.tab.o codec.o confset.o readtpl.o
+debug=memleak.o
 
-modules=$(scanmodules) $(coremodules) 
+modules=$(scanmodules) $(coremodules) $(debug)
 
 all: avinfo 
 

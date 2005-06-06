@@ -20,7 +20,7 @@
  *
  *************************************************************************/
 #include "confset.h"
-
+#include "memleak.h"
 
 const char* help_title=
 	AVINFO_SIGNATURE" "
@@ -85,7 +85,7 @@ const optd_t parameter[]={
 	{	"verbose",		'V',	OPTION_verbose,		VT_unknown, "print filenames to stderr while scaning"},/*implement*/
 	{	"filename",		0,		OPTION_filename,	VT_string,	""}/*implement*/
 };
-
+#define EL_NUM sizeof(parameter)/sizeof(*parameter)
 
 vlist_t* CreateConstantList(){
 	int c;
@@ -128,8 +128,8 @@ char* GetEnvVar(const char* varname){
 	}
 	clearname[cc]=0;
 	retval=getenv(clearname);
-	return retval?retval:""; 
 	free(clearname);
+	return retval?retval:""; 
 } 
 
 
@@ -167,8 +167,12 @@ int CopyIntValue(char* line){
 	int retval;
 	if(line[0]=='%'){
 		work_line=GetEnvVar(line);
-	}else work_line=line;
-	retval=atoi(work_line); /*TODO hex, octal, binary, boolean (Y/N, yes/no)*/
+		retval=atoi(work_line);
+		free(work_line);
+	}else {
+		work_line=line;
+		retval=atoi(line); 
+	}
 	return retval;
 }
 
@@ -350,7 +354,7 @@ int ReadConf(const char* ConfigName, const optd_t* OptList, const int OptListSiz
 	char* templine;
 	f=fopen(ConfigName,"r");
 	if(!f){
-		if(ConfigName) fprintf(stderr,"* unable to open configure file %s\n",ConfigName);
+		if(ConfigName) fprintf(stderr,"* unable to open configuration file %s\n",ConfigName);
 		return -1;
 	}
 	linec=0;
@@ -430,7 +434,7 @@ const char* DefaultTemplateName=CFG_DEFAULT_TEMPLATE_NAME;
 
 char* GetStartDir(){
 	#ifdef WINDOWS
-		int l=strlen(_pgmptr);
+		int l=strlen(_pgmptr); /*windows global variable with application path*/
 		char* retval;
 		while(l && (_pgmptr[l]!='/'&&_pgmptr[l]!='\\')) l--;  /*note: appPath[l]!='\\' - for Windows compability*/
 		if(!l) return strdup("");
@@ -457,14 +461,13 @@ static int isAbsolutePath(const char* line){
 
 
 config_t* Configure(int argc, char* argv[]){
-	#define EL_NUM sizeof(parameter)/sizeof(*parameter)
 	char* startDir=GetStartDir();
 	char* ConfigPath=NULL;
 	config_t * cfg;
 	optv_t* optv;
 	assert(cfg=calloc(sizeof(config_t),1));
 	assert(optv=calloc(sizeof(optv_t),EL_NUM));
-
+	printf("debug: startDir=%d\n",startDir);
 	if(*SystemDefaultConfig) {
 		if(isAbsolutePath(SystemDefaultConfig)) ConfigPath=strdup(SystemDefaultConfig);
 			else ConfigPath=strjoin(startDir,SystemDefaultConfig); /* N.B. If SystemConfig is not absolute path, it will thread as a relative path starts from avinfo home dir (not a pwd!)*/
@@ -510,8 +513,6 @@ config_t* Configure(int argc, char* argv[]){
 		}
 		if(!cfg->templatename) cfg->templatename=strdup(DefaultTemplateName);
 		cfg->template=ReadTemplate(ConfigPath,cfg->templatename);
-/*	if(ConfigPath) free(ConfigPath); BUG???? FIX????!!!! !!! !!!
-	if(startDir) free(startDir);*/
 		if(!cfg->template){
 			cfg->falltobuiltintemplate=1;
 			printf("Switch to builtin template\n");
@@ -523,8 +524,12 @@ config_t* Configure(int argc, char* argv[]){
 		/*todo add CloseConfigure*/
 		return 0;
 	}
+
+	if(ConfigPath) free(ConfigPath); 
+	printf("debug: startDir=%d\n",startDir);
+	if(startDir) free(startDir);
+	ClearOpt(optv);
 	return cfg;
-	#undef EL_NUM
 }
 
 
@@ -652,4 +657,34 @@ int ApplyOption(config_t* conf, const optd_t*optd, optv_t* in, const int OptList
 		}
 	}
 	return 0;
+}
+
+void ClearOpt(optv_t* optv){
+	int c;
+	for(c=0;c<EL_NUM;c++){
+		if(optv[c].string_value)free(optv[c].string_value);
+	}
+	free(optv);
+}
+
+void CloseConfig(config_t *cfg){
+	int c;
+	DeleteVList(cfg->base);
+	if(cfg->force_ext) free(cfg->force_ext);
+	for(c=0;c<cfg->ignore_ext_num;c++){
+		if(cfg->ignore_ext_list[c]) free(cfg->ignore_ext_list[c]);
+	}
+	if(cfg->ignore_ext_list) free(cfg->ignore_ext_list);
+	if(cfg->filelist) free(cfg->filelist);
+	if(cfg->filename) free(cfg->filename);
+	if(cfg->fcachename) free(cfg->fcachename);
+	if(cfg->userconfig) free(cfg->userconfig);
+	if(cfg->systemconfig) free(cfg->systemconfig);
+	if(cfg->templatefile) free(cfg->templatefile);
+	if(cfg->templatename) free(cfg->templatename);
+	DeleteTemplate(cfg->template);
+	if(cfg->outputfilename) free(cfg->outputfilename);
+	if(cfg->process) free(cfg->process);
+	if(cfg->title) free(cfg->title);
+	free(cfg);
 }
