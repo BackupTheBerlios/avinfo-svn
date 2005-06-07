@@ -76,8 +76,6 @@ int riffparse(vlist_t* list, FILE* file, int s){
 	unsigned int desc_size=0;
 	unsigned int d_c=0;
 
-	int dbg_cnt=0;
-
 	memset(video,0,sizeof(video));
 	memset(audio,0,sizeof(audio));
 	memset(bps,0,sizeof(bps));

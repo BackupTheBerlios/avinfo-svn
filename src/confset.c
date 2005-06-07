@@ -467,7 +467,6 @@ config_t* Configure(int argc, char* argv[]){
 	optv_t* optv;
 	assert(cfg=calloc(sizeof(config_t),1));
 	assert(optv=calloc(sizeof(optv_t),EL_NUM));
-	printf("debug: startDir=%d\n",startDir);
 	if(*SystemDefaultConfig) {
 		if(isAbsolutePath(SystemDefaultConfig)) ConfigPath=strdup(SystemDefaultConfig);
 			else ConfigPath=strjoin(startDir,SystemDefaultConfig); /* N.B. If SystemConfig is not absolute path, it will thread as a relative path starts from avinfo home dir (not a pwd!)*/
@@ -526,7 +525,6 @@ config_t* Configure(int argc, char* argv[]){
 	}
 
 	if(ConfigPath) free(ConfigPath); 
-	printf("debug: startDir=%d\n",startDir);
 	if(startDir) free(startDir);
 	ClearOpt(optv);
 	return cfg;

@@ -28,7 +28,7 @@ void DeleteVList(vlist_t* list){
 }
 
 
-int SetVar(vlist_t* list,const char* name,const int nvalue, const char* svalue){/*BUG!!!*/
+int SetVar(vlist_t* list,const char* name,const int nvalue, const char* svalue){
 	vlist_item_t *temp;
 	int c;
 	int result=0;
@@ -82,7 +82,8 @@ var_t GetROVar(vlist_t* list, const char* name){
 }
 
 int SetStringVar(vlist_t* list,const char* name,const char* svalue){
-	return SetVar(list,name,strlen(svalue),strdup(svalue));
+/*	return SetVar(list,name,strlen(svalue),strdup(svalue));*/
+	return SetVar(list,name,strlen(svalue),svalue);
 }
 
 var_t GetVar(vlist_t* list, const char* name){

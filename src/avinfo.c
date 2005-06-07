@@ -46,8 +46,8 @@ int main( int argc, char* argv[] ){
 	report(fcache,output,cfg);
 	CloseFileCache(fcache);
 	CloseConfig(cfg);
+	if(output!=stdout) fclose(output);
 	dbg_mem_stat();
 	dbg_heap_dump("");
-	if(output!=stdout) fclose(output);
 	return 0;
 }

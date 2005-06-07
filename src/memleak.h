@@ -28,6 +28,7 @@
    that module. For additional information see memleak.c
 */
 
+#define H_MEMLEAK_H
 #ifndef H_MEMLEAK_H
 #define H_MEMLEAK_H
 

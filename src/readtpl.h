@@ -57,5 +57,5 @@ typedef struct{
 #define MAX_TEMPLATE_SIZE 1024*1024
 
 template_t* ReadTemplate(const char* TemplateFileName, const char* TemplateName);
-void DeleteTemplte(template_t* tpl);
+void DeleteTemplate(template_t* tpl);
 #endif

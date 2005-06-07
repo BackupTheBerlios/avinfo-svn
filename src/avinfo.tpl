@@ -154,35 +154,44 @@
 [template name=html-list ver=1]
 [head]
 	print "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
-	print "<html><head><title>";
-	print title, " (",run.year,"-",run.mon,"-",run.day,")";
-	print "</title>";
-	print "
-	<style type=\"text/css\">\n
-	body{margin:1ex;padding:0}\n
-	table.report{width:100%;border-top:solid 1px gray;padding-top:1em}\n
-	td{padding:0.5ex;margin:0;border-bottom:dotted 1px silver}\n
-	.flnm{font-family:Tahoma;}\n
-	.fsize{font-family:Tahoma;font-weight:800;vertial-aligment:top}\n
-	.aud, .vid, {font-family:monospace}\n
-	.aud, .vid, .sub{font-size:90%}\n
-	.aud{color:#900;}\n
-	.vid{color:#009;}\n
-	.sub{color:#0A0;}\n
-	.bott{color:gray;font-size:90%;border-top:solid 1px silver;text-align:right;clear:both}\n
-	</style>\n</head><body>\n
+	print "<html>\n<head>\n\t<title>";
+	print title, " (",run.year,"-",run.mon,"-",run.day,")</title>\n";
+	print "<meta name=\"Description\" content=\"Automatically generated filelist\">\
+	<meta name=\"Generator\" content=\"AVInfo 1.0 (http://shounen.ru/soft/avinfo/)\">\
+	<style type=\"text/css\">\
+		body{margin:1ex;padding:0}\
+		table.report{width:100%;border-top:solid 1px gray;padding-top:1em}\
+		td{padding:0.5ex;margin:0;border-bottom:dotted 1px silver}\
+		.flnm{font-family:Tahoma;}\
+		.fsize{font-family:Tahoma;font-weight:800;vertial-aligment:top}\
+		.aud, .vid, {font-family:monospace}\
+		.aud, .vid, .sub{font-size:90%}\
+		.aud{color:#900;}\
+		.vid{color:#009;}\
+		.sub{color:#0A0;}\
+		.bott{color:gray;font-size:90%;border-top:solid 1px silver;text-align:right;clear:both}\
+	</style>\
+</head>\
+<body>\
 	<h1>",title,"</h1>\n
 	<p style=\"font-size:90%;font-family:Tahoma;color:gray;margin-left:1em\">created at <span style=\"color:green\">",run.year,"-",run.mon,"-",run.day,"</span>, ",run.hour,":",run.min,":",run.sec,"<br>",
 	"<span style=\"color:orange;font-weight:800\">",stat.total.files, "</span> files, <span style=\"color:red;font-weight:800\">";
 	if(stat.total.size>10240) print stat.total.size/1024,"</span> Gigabytes</p>";
-		else print stat.total.size,"</span> Megabytes</p>";
+		else print stat.total.size,"</span> Megabytes ";
+	if(stat.total.length) print " (play time:",ct:stat.total.length,")";
+	print "</p>";
 	print "<table class=report cellpadding=0 cellspacing=0>\n";
 [body]
 	if(ext="vob"&&size<16000000) {exit;}
 	print "<tr ";
-	if( counter & 1 ){
-		print "style=\"background:#EEE\"";
-	}
+	if( (counter / 4)*4=counter )
+		print "style=\"background:#FFF5F5\"";
+	else 
+		if ((counter/4)*4+1=counter)  
+			print "style=\"background:#F5FFF5\"";
+		else
+			if((counter/4)*4+2=counter)
+				print "style=\"background:#F5F5FF\"";
 	print "><td style=\"text-align:right\"><span class=\"flnm\">";
 	if(ext="vob")print in; else print sn:name;
     print "</span><td class=fsize> &nbsp; ", m1024:size,"b";
@@ -233,7 +242,7 @@
 	set c=0;
 	while (c++<stream.d) {
 		set i=0;
-		while (i++<d[c].num+1) if(d[c][i].name&&d[c][i].value) print d[c][i].name, ": ", d[c][i].value, "\n<br>";
+		while (i++<d[c].num+1) if(d[c][i].name&&d[c][i].value) print d[c][i].name, ": ", d[c][i].value, " \n<br>";
 	}
 	print "</td>\n</tr>\n";
 [foot]
@@ -252,7 +261,7 @@
 	print"Scan duration:";
 	if(run.scan.time) print run.scan.time; else print "&lt;1";
 	print "s";
-	if(stat.total.files/run.scan.time) print " (",stat.total.files/run.scan.time, "files per sec)";
+	if(stat.total.files/run.scan.time && run.scan.time>2 ) print " ( ",stat.total.files/run.scan.time, "files per sec)";
 	print ", report duration:";
 	if(run.report.time) print run.report.time;else print "&lt;1";
 	print "s</p>\n";
