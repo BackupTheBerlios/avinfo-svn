@@ -306,6 +306,7 @@ fcache_t* scan(config_t* cfg){
 		if(!stat(cfg->filename,&fs)){
 			if(S_ISREG(fs.st_mode)){
 				filedesc=ScanFile(cfg->filename,cfg);
+				fcache=InitFileCache();
 				if(filedesc) AddRecord(fcache,cfg->filename,filedesc);
 			}
 			if(S_ISDIR(fs.st_mode)){

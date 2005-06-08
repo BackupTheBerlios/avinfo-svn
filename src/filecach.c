@@ -67,6 +67,7 @@ int AddRecord(fcache_t* c, const char* name, vlist_t *l){
 
 	int i;
 	struct stat s;
+	assert(c!=NULL);
 	while(c->used_records>=c->allocated_records){
 		assert(c->record=realloc(c->record,c->allocated_records*2*sizeof(fcache_entry_t)));
 		c->allocated_records*=2;

@@ -120,7 +120,7 @@ template_t* ReadTemplate(const char* TemplateFileName, const char* TemplateName)
 	#define template_parts_names_number (sizeof(template_parts_names)/sizeof(*template_parts_names))
 	f=fopen(TemplateFileName,"r");
 	if(!f) {
-		printf ("error opening template %s\n",TemplateFileName);
+		printf ("* unable to open template file %s\n",TemplateFileName);
 		return NULL;
 	}
 	lc=SearchTemplateHeader(f,TemplateName);
