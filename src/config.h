@@ -12,6 +12,7 @@
 #ifdef MAKEFILE_WIN
 #  define CFG_PATH_STYLE_WINDOWS 1
 #  define WINDOWS
+#  include <windows.h>
 #else
 #  include "../config.h"
 #endif

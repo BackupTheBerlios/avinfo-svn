@@ -285,7 +285,14 @@ fcache_t* ScanFileList(const char* filelistname, fcache_t* fcache, config_t* cfg
 			}
 			filedesc=ScanFile(filename,cfg);
 			if(filedesc)  AddRecord(fc,filename,filedesc);
-			if(cfg->wait) sleep(10);
+			if(cfg->wait) {
+				#ifdef WINDOWS
+					Sleep(cfg->wait);
+				#endif
+				#ifndef WINDOWS
+					usleep(cfg->wait);
+				#endif
+			}
 			free(filename);
 		}
 		CloseFilelist(filelist);
