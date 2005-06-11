@@ -258,11 +258,7 @@ void AddDate(vlist_t* list, char* prefix,time_t UnixTime){
 	char* buffer;
 	struct tm *loctime;
 	#define POSTFIXSIZE 8
-	#define AddRecord(a,b) \
-			do{	\
-				memcpy(buffer+prefixlen,a,strlen(a)+1);	\
-				SetNumericVar(list,buffer,(int)b);	\
-			}while(0);
+	#define AddRecord(a,b) 	do{	memcpy(buffer+prefixlen,a,strlen(a)+1);	SetNumericVar(list,buffer,(int)b);	}while(0);
 			
 	assert(buffer=malloc(prefixlen+POSTFIXSIZE));
 	memcpy(buffer,prefix,prefixlen);

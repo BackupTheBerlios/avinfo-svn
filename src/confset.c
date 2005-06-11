@@ -444,9 +444,7 @@ char* GetStartDir(){
 		return retval;
 	#endif
 	#ifndef WINDOWS
-		fprintf(stderr,"Bad compilation settings, config/template filenames must be absolute path in *nix\n");
-		exit(-1);
-		return NULL;
+		return strdup("");
 	#endif
 }
 
