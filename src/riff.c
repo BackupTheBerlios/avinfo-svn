@@ -236,7 +236,6 @@ int riffparse(vlist_t* list, FILE* file, int s){
 				break;
 				if(buffer) free(buffer);
 				buffer=NULL;
-			case 4: 
 		}
 		if(ftell(file)&0x1){/* note - if entry not aligied to word, try again, (offset+1), needs for some soft, like AviUtl.*/
 			fseek(file,-3,SEEK_CUR);
