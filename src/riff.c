@@ -234,15 +234,13 @@ int riffparse(vlist_t* list, FILE* file, int s){
 				}
 				cont=0;
 				break;
-				if(buffer) free(buffer);
-				buffer=NULL;
 		}
 		if(ftell(file)&0x1){/* note - if entry not aligied to word, try again, (offset+1), needs for some soft, like AviUtl.*/
 			fseek(file,-3,SEEK_CUR);
 		}
         else fseek(file,size-4,SEEK_CUR);
 	}
-	riff_loop_end:
+riff_loop_end:
 	if(buffer) free(buffer);
 	buffer=NULL;
 	if(error_status) return 0;
